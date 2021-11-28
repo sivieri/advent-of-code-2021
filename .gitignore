@@ -1,0 +1,8 @@
+target
+target/*
+*.pdf
+*.DS_STORE
+.idea
+.settings
+*.iml
+src/main/java/me/sivieri/aoc2020/day19/grammars
