@@ -1,4 +1,4 @@
-package me.sivieri.aoc2020
+package me.sivieri.aoc2021
 
 object Main {
 

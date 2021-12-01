@@ -1,4 +1,4 @@
-package me.sivieri.aoc2020
+package me.sivieri.aoc2021
 
 import java.lang.IllegalArgumentException
 import java.math.BigInteger
