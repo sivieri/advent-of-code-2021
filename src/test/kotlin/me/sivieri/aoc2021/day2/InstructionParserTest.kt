@@ -23,4 +23,21 @@ class InstructionParserTest {
         assertThat(result, equalTo(150))
     }
 
+    @Test
+    fun `part 2 example with aim`() {
+        val instructions = """
+            forward 5
+            down 5
+            forward 8
+            up 3
+            down 8
+            forward 2
+        """.trimIndent()
+        val lines = instructions.split("\n")
+        val parser = InstructionParser()
+        val finalPosition = parser.parseWithAim(lines)
+        val result = finalPosition.horizontalPosition * finalPosition.depth
+        assertThat(result, equalTo(900))
+    }
+
 }
