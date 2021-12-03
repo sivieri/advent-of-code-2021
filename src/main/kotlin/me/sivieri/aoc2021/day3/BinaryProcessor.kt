@@ -25,4 +25,33 @@ class BinaryProcessor {
         return PowerConsumption(gamma, epsilon)
     }
 
+    fun calculateLifeSupportRating(
+        data: List<String>
+    ): LifeSupportRating {
+        val binary = data.map { it.toCharArray().toTypedArray() }
+        val oxygen = extractSingleNumberByDigitFrequency(binary) { if (it['0']!! > it['1']!!) '0' else '1' }
+        val co2 = extractSingleNumberByDigitFrequency(binary) { if (it['1']!! < it['0']!!) '1' else '0' }
+        return LifeSupportRating(oxygen, co2)
+    }
+
+    private fun extractSingleNumberByDigitFrequency(
+        binary: List<Array<Char>>,
+        frequencyCondition: (Map<Char, Int>) -> Char
+    ) =
+        (0 until binary.first().size)
+            .fold(binary) { numbers, position ->
+                if (numbers.size == 1) numbers
+                else {
+                    val cnt = numbers
+                        .map { it[position] }
+                        .groupingBy { it }
+                        .eachCount()
+                    val condition = frequencyCondition(cnt)
+                    numbers.filter { it[position] == condition }
+                }
+            }
+            .first()
+            .joinToString("")
+            .toInt(radix = 2)
+
 }
