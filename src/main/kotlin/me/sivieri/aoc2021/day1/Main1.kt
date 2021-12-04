@@ -7,7 +7,7 @@ object Main1 {
     @JvmStatic
     fun main(args: Array<String>) {
         val data = Utils
-            .readInput(1)
+            .readInputToList(1)
             .map { it.toInt() }
         val result = data
             .zipWithNext()

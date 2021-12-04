@@ -6,7 +6,7 @@ object Main2 {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val data = Utils.readInput(2)
+        val data = Utils.readInputToList(2)
         val parser = InstructionParser()
         val finalPosition = parser.parseWithAim(data)
         val result = finalPosition.horizontalPosition * finalPosition.depth

@@ -6,7 +6,9 @@ import java.nio.file.Path
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 object Utils {
 
-    fun readInput(day: Int): List<String> =
+    fun readInput(day: Int): String = Files.readString(Path.of(this::class.java.getResource("/day$day/input.txt").toURI()))
+
+    fun readInputToList(day: Int): List<String> =
         Files
             .lines(Path.of(this::class.java.getResource("/day$day/input.txt").toURI()))
             .toList()

@@ -7,7 +7,7 @@ object Main2 {
     @JvmStatic
     fun main(args: Array<String>) {
         val data = Utils
-            .readInput(1)
+            .readInputToList(1)
             .map { it.toInt() }
         val result = data
             .windowed(size = 3, step = 1)
