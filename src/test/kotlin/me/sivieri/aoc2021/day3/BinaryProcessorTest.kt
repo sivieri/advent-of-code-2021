@@ -1,6 +1,7 @@
 package me.sivieri.aoc2021.day3
 
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.equalTo
 import org.junit.Test
 
@@ -25,7 +26,7 @@ class BinaryProcessorTest {
             .split("\n")
         val processor = BinaryProcessor()
         val powerConsumption = processor.calculatePowerConsumption(input)
-        assertThat(powerConsumption.calculatePowerConsumption(), equalTo(198))
+        assertThat(powerConsumption.calculatePowerConsumption(), `is`(198))
     }
 
     @Test
@@ -47,7 +48,7 @@ class BinaryProcessorTest {
             .split("\n")
         val processor = BinaryProcessor()
         val lifeSupportRating = processor.calculateLifeSupportRating(input)
-        assertThat(lifeSupportRating.calculateLifeSupportRating(), equalTo(230))
+        assertThat(lifeSupportRating.calculateLifeSupportRating(), `is`(230))
     }
 
 }

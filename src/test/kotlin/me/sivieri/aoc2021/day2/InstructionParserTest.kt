@@ -1,6 +1,7 @@
 package me.sivieri.aoc2021.day2
 
 import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.equalTo
 import org.junit.Test
 
@@ -20,7 +21,7 @@ class InstructionParserTest {
         val parser = InstructionParser()
         val finalPosition = parser.parse(lines)
         val result = finalPosition.horizontalPosition * finalPosition.depth
-        assertThat(result, equalTo(150))
+        assertThat(result, `is`(150))
     }
 
     @Test
@@ -37,7 +38,7 @@ class InstructionParserTest {
         val parser = InstructionParser()
         val finalPosition = parser.parseWithAim(lines)
         val result = finalPosition.horizontalPosition * finalPosition.depth
-        assertThat(result, equalTo(900))
+        assertThat(result, `is`(900))
     }
 
 }
