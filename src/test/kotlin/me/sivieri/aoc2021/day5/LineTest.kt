@@ -2,8 +2,7 @@ package me.sivieri.aoc2021.day5
 
 import me.sivieri.aoc2021.common.Coordinate2D
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.empty
+import org.hamcrest.Matchers.*
 import org.junit.Assert
 import org.junit.Test
 
@@ -63,6 +62,30 @@ class LineTest {
             Coordinate2D(0, 6)
         )
         assertThat(result, `is`(expected))
+    }
+
+    @Test
+    fun `get diagonal line`() {
+        val line = Line(Coordinate2D(1, 1), Coordinate2D(3, 3))
+        val result = line.getFullLineCoordinates(true)
+        val expected = listOf(
+            Coordinate2D(1, 1),
+            Coordinate2D(2, 2),
+            Coordinate2D(3, 3)
+        )
+        assertThat(result, containsInAnyOrder(*expected.toTypedArray()))
+    }
+
+    @Test
+    fun `get diagonal line from higher`() {
+        val line = Line(Coordinate2D(9, 7), Coordinate2D(7, 9))
+        val result = line.getFullLineCoordinates(true)
+        val expected = listOf(
+            Coordinate2D(7, 9),
+            Coordinate2D(8, 8),
+            Coordinate2D(9, 7)
+        )
+        assertThat(result, containsInAnyOrder(*expected.toTypedArray()))
     }
 
     @Test

@@ -2,7 +2,7 @@ package me.sivieri.aoc2021.day5
 
 import me.sivieri.aoc2021.Utils
 
-object Main1 {
+object Main2 {
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -12,7 +12,7 @@ object Main1 {
         val maxX = data.maxOf { maxOf(it.start.x, it.end.x) }
         val maxY = data.maxOf { maxOf(it.start.y, it.end.y) }
         val oceanFloor = OceanFloor(maxX, maxY)
-        oceanFloor.calculateVents(data, false)
+        oceanFloor.calculateVents(data, true)
         val result = oceanFloor.countHighConcentration()
         println(result)
     }
