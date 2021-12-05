@@ -1,17 +1,14 @@
 package me.sivieri.aoc2021.day4
 
+import me.sivieri.aoc2021.common.Coordinate2D
+
 data class Value(
     val number: Int,
     val marked: Boolean
 )
 
-data class Coordinate(
-    val x: Int,
-    val y: Int
-)
-
 data class Board(
-    private val squares: MutableMap<Coordinate, Value>
+    private val squares: MutableMap<Coordinate2D, Value>
 ) {
 
     fun mark(number: Int) {
@@ -41,7 +38,7 @@ data class Board(
                 .split("\n")
                 .flatMapIndexed { y, s ->
                     s.trim().split("\\s+".toRegex()).mapIndexed { x, s ->
-                        Coordinate(x, y) to Value(s.toInt(), false)
+                        Coordinate2D(x, y) to Value(s.toInt(), false)
                     }
                 }
                 .toMap()
