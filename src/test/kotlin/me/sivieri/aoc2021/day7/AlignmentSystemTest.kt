@@ -11,8 +11,16 @@ class AlignmentSystemTest {
     fun `part 1 example`() {
         val input = "16,1,2,0,4,2,7,1,2,14".toIntList()
         val alignmentSystem = AlignmentSystem(input)
-        val result = alignmentSystem.findBestAlignment()
+        val result = alignmentSystem.findBestAlignmentAtConstantConsumption()
         assertThat(result, `is`(Pair(2, 37)))
+    }
+
+    @Test
+    fun `part 2 example`() {
+        val input = "16,1,2,0,4,2,7,1,2,14".toIntList()
+        val alignmentSystem = AlignmentSystem(input)
+        val result = alignmentSystem.findBestAlignmentAtIncreasingConsumption()
+        assertThat(result, `is`(Pair(5, 168)))
     }
 
 }
