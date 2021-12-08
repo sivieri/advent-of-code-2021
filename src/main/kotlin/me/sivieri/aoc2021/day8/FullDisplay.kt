@@ -6,13 +6,11 @@ class FullDisplay(
 
     private val displays = lines
         .map { line ->
-            val (input, output) = line.split("|")
-            SingleDisplay(
-                input.trim().split(" "),
-                output.trim().split(" ")
-            )
+            SingleDisplay.fromString(line)
         }
 
     fun countEasyDigitsInOutput(): Int = displays.sumOf { it.countEasyDigitsInOutput() }
+
+    fun sumTotal(): Int = displays.sumOf { it.calculateOutputNumber() }
 
 }
