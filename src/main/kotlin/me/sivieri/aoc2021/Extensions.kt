@@ -44,3 +44,8 @@ internal fun <T> cartesianProductOfThree(
 
 internal fun <T> List<T>.zipWithIndex(): List<Pair<Int, T>> =
     this.mapIndexed { index, t -> Pair(index, t) }
+
+internal fun <T> List<T>.multiplyBy(f: (T) -> Long): Long =
+    this.fold(1) { acc, t ->
+        acc * f(t)
+    }
