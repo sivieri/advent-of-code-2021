@@ -49,3 +49,5 @@ internal fun <T> List<T>.multiplyBy(f: (T) -> Long): Long =
     this.fold(1) { acc, t ->
         acc * f(t)
     }
+
+internal fun <T> List<T>.getMiddleElement(): T = this[(this.size - 1) / 2]
