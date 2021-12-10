@@ -4,7 +4,6 @@ import me.sivieri.aoc2021.common.Coordinate2D
 import me.sivieri.aoc2021.multiplyBy
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.containsInAnyOrder
 import org.junit.Test
 
 class HeightmapTest {
