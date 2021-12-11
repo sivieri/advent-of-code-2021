@@ -79,4 +79,23 @@ class OctopusesModelTest {
         assertThat(flashes, `is`(1656))
     }
 
+    @Test
+    fun `large example simultaneous step`() {
+        val input = """
+            5483143223
+            2745854711
+            5264556173
+            6141336146
+            6357385478
+            4167524645
+            2176841721
+            6882881134
+            4846848554
+            5283751526
+        """.trimIndent().split("\n")
+        val model = OctopusesModel(input)
+        val step = model.findSimultaneousStep()
+        assertThat(step, `is`(195))
+    }
+
 }

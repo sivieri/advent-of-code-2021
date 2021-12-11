@@ -67,6 +67,14 @@ class OctopusesModel(data: List<String>) {
 
     fun performNSteps(n: Int): Int = (1..n).sumOf { performStep() }
 
+    fun findSimultaneousStep(): Int {
+        var step = 0
+        while (true) {
+            step++
+            if (performStep() == size * size) return@findSimultaneousStep step
+        }
+    }
+
     fun stringRepresentation(): String = octopusesEnergyLevels.stringRepresentation(cellSeparator = "") { it.toString() }
 
     override fun toString(): String = octopusesEnergyLevels.stringRepresentation(cellSeparator = " ") { it.toString().padStart(2, ' ') }
