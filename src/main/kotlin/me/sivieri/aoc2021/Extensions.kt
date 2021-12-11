@@ -51,3 +51,6 @@ internal fun <T> List<T>.multiplyBy(f: (T) -> Long): Long =
     }
 
 internal fun <T> List<T>.getMiddleElement(): T = this[(this.size - 1) / 2]
+
+internal fun <T> Array<Array<T>>.stringRepresentation(cellSeparator: String, f: (T) -> String): String =
+    this.joinToString("\n") { it.joinToString(cellSeparator) { f(it) }  }
