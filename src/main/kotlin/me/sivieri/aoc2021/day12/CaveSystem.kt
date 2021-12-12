@@ -15,10 +15,8 @@ class CaveSystem(
     init {
         input.forEach { line ->
             val (startVertexName, endVertexName) = line.split("-", limit = 2)
-            val startVertexSize = if (startVertexName.isLowerCase()) CaveSize.SMALL else CaveSize.BIG
-            val startVertex = Cave(startVertexName, startVertexSize)
-            val endVertexSize = if (endVertexName.isLowerCase()) CaveSize.SMALL else CaveSize.BIG
-            val endVertex = Cave(endVertexName, endVertexSize)
+            val startVertex = Cave.fromName(startVertexName)
+            val endVertex = Cave.fromName(endVertexName)
             g.addVertex(startVertex)
             g.addVertex(endVertex)
             g.addEdge(startVertex, endVertex)
@@ -26,26 +24,33 @@ class CaveSystem(
         }
     }
 
-    fun findAllPaths(): List<String> {
+    fun findAllPaths(doubleSmallAllowed: Boolean = false): List<String> {
         var paths = listOf(
-            listOf(startVertex)
+            Path(
+                listOf(startVertex),
+                mapOf(startVertex to 1)
+            )
         )
-        while (!paths.all { it.ends() }) {
+        while (!paths.all { it.path.ends() }) {
             paths = paths.flatMap { path ->
-                if (!path.ends()) {
-                    val last = path.last()
+                if (!path.path.ends()) {
+                    val last = path.path.last()
                     g
                         .edgesOf(last)
                         .mapNotNull { edge ->
                             val otherCave = g.getOtherVertex(last, edge)
-                            if (otherCave.isSmall() && path.contains(otherCave)) null
-                            else path.plus(otherCave)
+                            if (
+                                (otherCave.isStart() && path.path.size > 1)
+                                || (!doubleSmallAllowed && otherCave.isSmall() && path.path.contains(otherCave))
+                                || (doubleSmallAllowed && otherCave.isSmall() && path.smallAlreadyVisitedTwice(otherCave))
+                            ) null
+                            else path.addCave(otherCave)
                         }
                 }
                 else listOf(path)
             }
         }
-        return paths.map { path ->
+        return paths.map { (path, _) ->
             path.joinToString(",") { it.name }
         }
     }
