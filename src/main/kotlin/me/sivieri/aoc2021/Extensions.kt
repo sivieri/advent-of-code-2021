@@ -1,5 +1,7 @@
 package me.sivieri.aoc2021
 
+import org.jgrapht.Graph
+import java.lang.IllegalArgumentException
 import java.util.Collections.swap
 
 internal fun String.toIntList(): List<Int> = this.split(",").map { it.toInt() }
@@ -54,3 +56,12 @@ internal fun <T> List<T>.getMiddleElement(): T = this[(this.size - 1) / 2]
 
 internal fun <T> Array<Array<T>>.stringRepresentation(cellSeparator: String, f: (T) -> String): String =
     this.joinToString("\n") { it.joinToString(cellSeparator) { f(it) }  }
+
+internal fun String.isLowerCase(): Boolean = this.all { it in 'a'..'z' }
+
+internal fun <V, E> Graph<V, E>.getOtherVertex(vertex: V, edge: E): V =
+    when (vertex) {
+        this.getEdgeSource(edge) -> this.getEdgeTarget(edge)
+        this.getEdgeTarget(edge) -> this.getEdgeSource(edge)
+        else -> throw IllegalArgumentException("Vertex $vertex is not connected to edge $edge")
+    }
