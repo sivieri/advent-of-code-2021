@@ -3,7 +3,6 @@ package me.sivieri.aoc2021.day13
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.Test
-import kotlin.math.exp
 
 class OrigamiTest {
 
