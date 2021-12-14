@@ -37,28 +37,28 @@ class PolymerizationTest {
     @Test
     fun `part 1 step 2`() {
         val polymerization = Polymerization(input)
-        val result = polymerization.applyInsertions(1)
+        val result = polymerization.applyInsertions(2)
         assertThat(result, `is`("NBCCNBBBCBHCB"))
     }
 
     @Test
     fun `part 1 step 3`() {
         val polymerization = Polymerization(input)
-        val result = polymerization.applyInsertions(1)
+        val result = polymerization.applyInsertions(3)
         assertThat(result, `is`("NBBBCNCCNBBNBNBBCHBHHBCHB"))
     }
 
     @Test
     fun `part 1 step 4`() {
         val polymerization = Polymerization(input)
-        val result = polymerization.applyInsertions(1)
+        val result = polymerization.applyInsertions(4)
         assertThat(result, `is`("NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB"))
     }
 
     @Test
     fun `part 1 step 10`() {
         val polymerization = Polymerization(input)
-        val polymer = polymerization.applyInsertions(1)
+        val polymer = polymerization.applyInsertions(10)
         val result = Polymerization.calculateMostMinusLeastCommon(polymer)
         assertThat(result, `is`(1588))
     }
