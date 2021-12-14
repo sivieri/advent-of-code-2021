@@ -65,3 +65,8 @@ internal fun <V, E> Graph<V, E>.getOtherVertex(vertex: V, edge: E): V =
         this.getEdgeTarget(edge) -> this.getEdgeSource(edge)
         else -> throw IllegalArgumentException("Vertex $vertex is not connected to edge $edge")
     }
+
+internal fun <K, V> Map<K, V>.combineWith(otherMap: Map<K, V>, f: (v1: V?, v2: V?) -> V): Map<K, V> =
+    (this.keys + otherMap.keys).associateWith { key ->
+        f(this[key], otherMap[key])
+    }
