@@ -11,8 +11,7 @@ object Main2 {
         val path = riskLevelCalculator.findLowestRiskPath()
         println(path.first.joinToString("\n"))
         println(path.first.size)
-        println(path.second - 2)
-
+        println(path.second)
     }
 
 }
