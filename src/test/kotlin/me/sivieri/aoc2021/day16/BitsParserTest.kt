@@ -11,7 +11,7 @@ class BitsParserTest {
     @Test
     fun `literal value`() {
         val result = bitsParser.parseMessage("D2FE28")
-        val expected = LiteralValue(6, 4, 2021)
+        val expected = LiteralValue(6, 2021)
         assertThat(result, `is`(expected))
     }
 
@@ -22,8 +22,8 @@ class BitsParserTest {
             1,
             6,
             listOf(
-                LiteralValue(6, 4, 10),
-                LiteralValue(2, 4, 20)
+                LiteralValue(6, 10),
+                LiteralValue(2, 20)
             )
         )
         assertThat(result, `is`(expected))
@@ -36,9 +36,9 @@ class BitsParserTest {
             7,
             3,
             listOf(
-                LiteralValue(2, 4, 1),
-                LiteralValue(4, 4, 2),
-                LiteralValue(1, 4, 3)
+                LiteralValue(2, 1),
+                LiteralValue(4, 2),
+                LiteralValue(1, 3)
             )
         )
         assertThat(result, `is`(expected))
@@ -59,7 +59,7 @@ class BitsParserTest {
                             5,
                             6,
                             listOf(
-                                LiteralValue(6, 4, 10)
+                                LiteralValue(6, 10)
                             )
                         )
                     )
@@ -81,16 +81,16 @@ class BitsParserTest {
                     5,
                     6,
                     listOf(
-                        LiteralValue(6, 4, 10),
-                        LiteralValue(6, 4, 10)
+                        LiteralValue(6, 10),
+                        LiteralValue(6, 10)
                     )
                 ),
                 Operator(
                     5,
                     6,
                     listOf(
-                        LiteralValue(6, 4, 10),
-                        LiteralValue(6, 4, 10)
+                        LiteralValue(6, 10),
+                        LiteralValue(6, 10)
                     )
                 )
             )
@@ -110,16 +110,16 @@ class BitsParserTest {
                     5,
                     6,
                     listOf(
-                        LiteralValue(6, 4, 10),
-                        LiteralValue(6, 4, 10)
+                        LiteralValue(6, 10),
+                        LiteralValue(6, 10)
                     )
                 ),
                 Operator(
                     5,
                     6,
                     listOf(
-                        LiteralValue(6, 4, 10),
-                        LiteralValue(6, 4, 10)
+                        LiteralValue(6, 10),
+                        LiteralValue(6, 10)
                     )
                 )
             )
@@ -143,11 +143,11 @@ class BitsParserTest {
                             5,
                             6,
                             listOf(
-                                LiteralValue(6, 4, 10),
-                                LiteralValue(6, 4, 10),
-                                LiteralValue(6, 4, 10),
-                                LiteralValue(6, 4, 10),
-                                LiteralValue(6, 4, 10)
+                                LiteralValue(6, 10),
+                                LiteralValue(6, 10),
+                                LiteralValue(6, 10),
+                                LiteralValue(6, 10),
+                                LiteralValue(6, 10)
                             )
                         )
                     )

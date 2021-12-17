@@ -12,39 +12,45 @@ class BitsParser {
     private fun parse(msg: String): Packet {
         val parserStatus = ArrayDeque<BitsParserStatus>()
         val packets = ArrayDeque<Packet>()
-        val operatorVersions = ArrayDeque<Pair<Int, Int>>()
-        var currentMsg = msg
-        while (currentMsg.isNotEmpty()) {
-            if (parserStatus.first() == BitsParserStatus.END_OPERATOR) {
+        var i = 0
+        while (i < msg.length
+            && (msg.length - i) > 6 // this should take care of padding zeros
+        ) {
+            if (parserStatus.firstOrNull()?.label == BitsParserStatusLabel.END_OPERATOR) {
                 parserStatus.removeFirst()
                 val subPackets = mutableListOf<Packet>()
-                while (parserStatus.removeFirst() != BitsParserStatus.BEGIN_OPERATOR) {
+                var status = parserStatus.removeFirst()
+                while (status.label != BitsParserStatusLabel.BEGIN_OPERATOR) {
                     subPackets.add(packets.removeFirst())
+                    status = parserStatus.removeFirst()
                 }
-                val (version, idType) = operatorVersions.removeFirst()
-                val operator = Operator(version, idType, subPackets.toList())
+                status as BeginOperatorStatus
+                val operator = Operator(status.version, status.typeId, subPackets.toList())
                 packets.addFirst(operator)
-                parserStatus.addFirst(BitsParserStatus.OPERATOR)
+                parserStatus.addFirst(OperatorStatus(i - status.startIndex))
+                if (checkOperatorEnding(parserStatus)) parserStatus.addFirst(EndOperatorStatus())
             }
             else {
-                val version = Integer.parseInt(currentMsg.substring(0, 3), 2)
-                val typeId = Integer.parseInt(currentMsg.substring(3, 6), 2)
+                val version = Integer.parseInt(msg.substring(i, i + 3), 2)
+                val typeId = Integer.parseInt(msg.substring(i + 3, i + 6), 2)
                 if (typeId == LiteralValue.LITERAL_VALUE_TYPE_ID) {
-                    val (index, literalValue) = parseLiteralValue(version, currentMsg.substring(6))
+                    val (index, literalValue) = parseLiteralValue(version, msg.substring(i + 6))
                     packets.addFirst(literalValue)
-                    parserStatus.addFirst(BitsParserStatus.LITERAL_VALUE)
-                    currentMsg = currentMsg.substring(index + 6)
+                    parserStatus.addFirst(LiteralValueStatus(index))
+                    if (checkOperatorEnding(parserStatus)) parserStatus.addFirst(EndOperatorStatus())
+                    i += 6 + index
                 }
                 else {
-                    parserStatus.addFirst(BitsParserStatus.BEGIN_OPERATOR)
-                    val mode = currentMsg[6].toString().toInt()
-                    if (mode == 0) {
-                        val subPacketsLength = Integer.parseInt(currentMsg.substring(7, 7 + OPERATOR_MODE_ZERO_LENGTH), 2)
-                        currentMsg = currentMsg.substring(7 + OPERATOR_MODE_ZERO_LENGTH)
+                    val mode = msg[i + 6].toString().toInt()
+                    i += if (mode == 0) {
+                        val subPacketsLength = Integer.parseInt(msg.substring(i + 7, i + 7 + OPERATOR_MODE_ZERO_LENGTH), 2)
+                        parserStatus.addFirst(BeginOperatorStatus(i + 7 + OPERATOR_MODE_ZERO_LENGTH, version, typeId, subPacketsLength, 0))
+                        7 + OPERATOR_MODE_ZERO_LENGTH
                     }
                     else {
-                        val subPacketsNumber = Integer.parseInt(currentMsg.substring(7, 7 + OPERATOR_MODE_ONE_LENGTH), 2)
-                        currentMsg = currentMsg.substring(7 + OPERATOR_MODE_ONE_LENGTH)
+                        val subPacketsNumber = Integer.parseInt(msg.substring(i + 7, i + 7 + OPERATOR_MODE_ONE_LENGTH), 2)
+                        parserStatus.addFirst(BeginOperatorStatus(i + 7 + OPERATOR_MODE_ONE_LENGTH, version, typeId, 0, subPacketsNumber))
+                        7 + OPERATOR_MODE_ONE_LENGTH
                     }
                 }
             }
@@ -52,8 +58,39 @@ class BitsParser {
         return packets.first()
     }
 
+    private fun checkOperatorEnding(stack: ArrayDeque<BitsParserStatus>): Boolean {
+        var subPacketLength = 0
+        var subPacketNumber = 0
+        for (element in stack) {
+            when (element) {
+                is LiteralValueStatus -> {
+                    subPacketLength += element.subPacketLength
+                    subPacketNumber++
+                }
+                is OperatorStatus -> {
+                    subPacketLength += element.subPacketLength
+                    subPacketNumber++
+                }
+                is BeginOperatorStatus -> {
+                    if (element.subPacketLength == 0) return element.subPacketNumber - subPacketNumber == 0
+                    if (element.subPacketNumber == 0) return element.subPacketLength - subPacketLength == 0
+                }
+                else -> { /* this should not happen */ }
+            }
+        }
+        return true
+    }
+
     private fun parseLiteralValue(version: Int, msg: String): Pair<Int, LiteralValue> {
-        TODO("Not yet implemented")
+        val result = StringBuffer()
+        var index = 0
+        var current = ""
+        do {
+            current = msg.substring(index, index + 5)
+            index += 5
+            result.append(current.substring(1, 5))
+        } while (current[0] != '0')
+        return Pair(index, LiteralValue(version, Integer.parseInt(result.toString(), 2)))
     }
 
     companion object {
