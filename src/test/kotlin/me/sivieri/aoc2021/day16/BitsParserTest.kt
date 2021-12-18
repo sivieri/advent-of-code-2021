@@ -49,17 +49,17 @@ class BitsParserTest {
         val result = bitsParser.parseMessage("8A004A801A8002F478")
         val expected = Operator(
             4,
-            6,
+            2,
             listOf(
                 Operator(
                     1,
-                    6,
+                    2,
                     listOf(
                         Operator(
                             5,
-                            6,
+                            2,
                             listOf(
-                                LiteralValue(6, 10)
+                                LiteralValue(6, 15)
                             )
                         )
                     )
@@ -75,22 +75,22 @@ class BitsParserTest {
         val result = bitsParser.parseMessage("620080001611562C8802118E34")
         val expected = Operator(
             3,
-            6,
+            0,
             listOf(
                 Operator(
-                    5,
-                    6,
+                    0,
+                    0,
                     listOf(
-                        LiteralValue(6, 10),
-                        LiteralValue(6, 10)
+                        LiteralValue(0, 10),
+                        LiteralValue(5, 11)
                     )
                 ),
                 Operator(
-                    5,
-                    6,
+                    1,
+                    0,
                     listOf(
-                        LiteralValue(6, 10),
-                        LiteralValue(6, 10)
+                        LiteralValue(0, 12),
+                        LiteralValue(3, 13)
                     )
                 )
             )
@@ -103,23 +103,23 @@ class BitsParserTest {
     fun `part 1 example 3`() {
         val result = bitsParser.parseMessage("C0015000016115A2E0802F182340")
         val expected = Operator(
-            3,
             6,
+            0,
             listOf(
                 Operator(
-                    5,
-                    6,
+                    0,
+                    0,
                     listOf(
-                        LiteralValue(6, 10),
-                        LiteralValue(6, 10)
+                        LiteralValue(0, 10),
+                        LiteralValue(6, 11)
                     )
                 ),
                 Operator(
-                    5,
-                    6,
+                    4,
+                    0,
                     listOf(
-                        LiteralValue(6, 10),
-                        LiteralValue(6, 10)
+                        LiteralValue(7, 12),
+                        LiteralValue(0, 13)
                     )
                 )
             )
@@ -132,22 +132,22 @@ class BitsParserTest {
     fun `part 1 example 4`() {
         val result = bitsParser.parseMessage("A0016C880162017C3686B18A3D4780")
         val expected = Operator(
-            4,
-            6,
+            5,
+            0,
             listOf(
                 Operator(
                     1,
-                    6,
+                    0,
                     listOf(
                         Operator(
-                            5,
-                            6,
+                            3,
+                            0,
                             listOf(
-                                LiteralValue(6, 10),
-                                LiteralValue(6, 10),
-                                LiteralValue(6, 10),
-                                LiteralValue(6, 10),
-                                LiteralValue(6, 10)
+                                LiteralValue(7, 6),
+                                LiteralValue(6, 6),
+                                LiteralValue(5, 12),
+                                LiteralValue(2, 15),
+                                LiteralValue(2, 15)
                             )
                         )
                     )

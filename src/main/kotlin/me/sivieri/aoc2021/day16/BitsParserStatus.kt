@@ -5,8 +5,7 @@ enum class BitsParserStatusLabel {
     LITERAL_VALUE,
     OPERATOR,
     BEGIN_OPERATOR,
-    END_OPERATOR,
-    PROGRESS_OPERATOR;
+    END_OPERATOR;
 
 }
 

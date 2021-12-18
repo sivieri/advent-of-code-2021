@@ -1,5 +1,7 @@
 package me.sivieri.aoc2021.day16
 
+import java.lang.IllegalStateException
+
 class BitsParser {
 
     fun parseMessage(input: String): Packet {
@@ -50,17 +52,18 @@ class BitsParser {
                     val mode = msg[i + 6].toString().toInt()
                     i += if (mode == 0) {
                         val subPacketsLength = Integer.parseInt(msg.substring(i + 7, i + 7 + OPERATOR_MODE_ZERO_LENGTH), 2)
-                        parserStatus.addFirst(BeginOperatorStatus(i + 7 + OPERATOR_MODE_ZERO_LENGTH, version, typeId, subPacketsLength, 0))
+                        parserStatus.addFirst(BeginOperatorStatus(i, version, typeId, subPacketsLength, 0))
                         7 + OPERATOR_MODE_ZERO_LENGTH
                     }
                     else {
                         val subPacketsNumber = Integer.parseInt(msg.substring(i + 7, i + 7 + OPERATOR_MODE_ONE_LENGTH), 2)
-                        parserStatus.addFirst(BeginOperatorStatus(i + 7 + OPERATOR_MODE_ONE_LENGTH, version, typeId, 0, subPacketsNumber))
+                        parserStatus.addFirst(BeginOperatorStatus(i, version, typeId, 0, subPacketsNumber))
                         7 + OPERATOR_MODE_ONE_LENGTH
                     }
                 }
             }
         }
+        if (checkBeginOperatorExistence(parserStatus)) throw IllegalStateException("Pending operators found at the end")
         return packets.first()
     }
 
@@ -102,7 +105,7 @@ class BitsParser {
             index += 5
             result.append(current.substring(1, 5))
         } while (current[0] != '0')
-        return Pair(index, LiteralValue(version, Integer.parseInt(result.toString(), 2)))
+        return Pair(index, LiteralValue(version, java.lang.Long.parseLong(result.toString(), 2)))
     }
 
     companion object {

@@ -33,7 +33,7 @@ sealed class Packet(
 
 class LiteralValue(
     version: Int,
-    val value: Int
+    val value: Long
 ): Packet(version, LITERAL_VALUE_TYPE_ID) {
 
     override fun versionSum(): Int = version
@@ -52,7 +52,7 @@ class LiteralValue(
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = 31 * result + value
+        result = 31 * result + value.hashCode()
         return result
     }
 
@@ -71,7 +71,7 @@ class Operator(
     val subPackets: List<Packet>
 ): Packet(version, typeId) {
 
-    override fun versionSum(): Int = version + subPackets.sumOf { it.version }
+    override fun versionSum(): Int = version + subPackets.sumOf { it.versionSum() }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
