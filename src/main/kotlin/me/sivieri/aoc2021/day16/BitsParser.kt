@@ -13,8 +13,12 @@ class BitsParser {
         val parserStatus = ArrayDeque<BitsParserStatus>()
         val packets = ArrayDeque<Packet>()
         var i = 0
-        while (i < msg.length
-            && (msg.length - i) > 6 // this should take care of padding zeros
+        while (
+            (
+                i < msg.length
+                && (msg.length - i) >= MIN_PACKET_LENGTH
+            )
+            || checkEndOperatorExistence(parserStatus)
         ) {
             if (parserStatus.firstOrNull()?.label == BitsParserStatusLabel.END_OPERATOR) {
                 parserStatus.removeFirst()
@@ -25,10 +29,11 @@ class BitsParser {
                     status = parserStatus.removeFirst()
                 }
                 status as BeginOperatorStatus
-                val operator = Operator(status.version, status.typeId, subPackets.toList())
+                val operator = Operator(status.version, status.typeId, subPackets.toList().reversed())
                 packets.addFirst(operator)
                 parserStatus.addFirst(OperatorStatus(i - status.startIndex))
-                if (checkOperatorEnding(parserStatus)) parserStatus.addFirst(EndOperatorStatus())
+                if (checkBeginOperatorExistence(parserStatus) && checkOperatorEnding(parserStatus))
+                    parserStatus.addFirst(EndOperatorStatus())
             }
             else {
                 val version = Integer.parseInt(msg.substring(i, i + 3), 2)
@@ -36,8 +41,9 @@ class BitsParser {
                 if (typeId == LiteralValue.LITERAL_VALUE_TYPE_ID) {
                     val (index, literalValue) = parseLiteralValue(version, msg.substring(i + 6))
                     packets.addFirst(literalValue)
-                    parserStatus.addFirst(LiteralValueStatus(index))
-                    if (checkOperatorEnding(parserStatus)) parserStatus.addFirst(EndOperatorStatus())
+                    parserStatus.addFirst(LiteralValueStatus(6 + index))
+                    if (checkBeginOperatorExistence(parserStatus) && checkOperatorEnding(parserStatus))
+                        parserStatus.addFirst(EndOperatorStatus())
                     i += 6 + index
                 }
                 else {
@@ -57,6 +63,12 @@ class BitsParser {
         }
         return packets.first()
     }
+
+    private fun checkEndOperatorExistence(stack: ArrayDeque<BitsParserStatus>): Boolean =
+        stack.find { it is EndOperatorStatus } != null
+
+    private fun checkBeginOperatorExistence(stack: ArrayDeque<BitsParserStatus>): Boolean =
+        stack.find { it is BeginOperatorStatus } != null
 
     private fun checkOperatorEnding(stack: ArrayDeque<BitsParserStatus>): Boolean {
         var subPacketLength = 0
@@ -114,6 +126,7 @@ class BitsParser {
         )
         private const val OPERATOR_MODE_ZERO_LENGTH = 15
         private const val OPERATOR_MODE_ONE_LENGTH = 11
+        private const val MIN_PACKET_LENGTH = 11 // a literal value
     }
 
 }
