@@ -13,4 +13,11 @@ class TrenchTest {
         assertThat(result, `is`(45))
     }
 
+    @Test
+    fun `part 2 example`() {
+        val trench = Trench(20, 30, -10, -5)
+        val result = trench.findAllCouplesCount()
+        assertThat(result, `is`(112))
+    }
+
 }
