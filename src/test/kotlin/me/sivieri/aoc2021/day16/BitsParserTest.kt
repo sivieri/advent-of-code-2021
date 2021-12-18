@@ -158,4 +158,68 @@ class BitsParserTest {
         assertThat(result.versionSum(), `is`(31))
     }
 
+    @Test
+    fun `part 2 example 1`() {
+        val input = "C200B40A82"
+        val msg = bitsParser.parseMessage(input)
+        val result = msg.applyOperation()
+        assertThat(result, `is`(3L))
+    }
+
+    @Test
+    fun `part 2 example 2`() {
+        val input = "04005AC33890"
+        val msg = bitsParser.parseMessage(input)
+        val result = msg.applyOperation()
+        assertThat(result, `is`(54L))
+    }
+
+    @Test
+    fun `part 2 example 3`() {
+        val input = "880086C3E88112"
+        val msg = bitsParser.parseMessage(input)
+        val result = msg.applyOperation()
+        assertThat(result, `is`(7L))
+    }
+
+    @Test
+    fun `part 2 example 4`() {
+        val input = "CE00C43D881120"
+        val msg = bitsParser.parseMessage(input)
+        val result = msg.applyOperation()
+        assertThat(result, `is`(9L))
+    }
+
+    @Test
+    fun `part 2 example 5`() {
+        val input = "D8005AC2A8F0"
+        val msg = bitsParser.parseMessage(input)
+        val result = msg.applyOperation()
+        assertThat(result, `is`(1L))
+    }
+
+    @Test
+    fun `part 2 example 6`() {
+        val input = "F600BC2D8F"
+        val msg = bitsParser.parseMessage(input)
+        val result = msg.applyOperation()
+        assertThat(result, `is`(0L))
+    }
+
+    @Test
+    fun `part 2 example 7`() {
+        val input = "9C005AC2F8F0"
+        val msg = bitsParser.parseMessage(input)
+        val result = msg.applyOperation()
+        assertThat(result, `is`(0L))
+    }
+
+    @Test
+    fun `part 2 example 8`() {
+        val input = "9C0141080250320F1802104A08"
+        val msg = bitsParser.parseMessage(input)
+        val result = msg.applyOperation()
+        assertThat(result, `is`(1L))
+    }
+
 }
