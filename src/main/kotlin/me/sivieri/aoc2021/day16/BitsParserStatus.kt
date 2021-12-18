@@ -14,11 +14,13 @@ sealed class BitsParserStatus(
 )
 
 class LiteralValueStatus(
-    val subPacketLength: Int
+    val subPacketLength: Int,
+    val literalValue: LiteralValue
 ): BitsParserStatus(BitsParserStatusLabel.LITERAL_VALUE)
 
 class OperatorStatus(
-    val subPacketLength: Int
+    val subPacketLength: Int,
+    val operator: Operator
 ): BitsParserStatus(BitsParserStatusLabel.OPERATOR)
 
 class BeginOperatorStatus(
