@@ -1,14 +1,76 @@
 package me.sivieri.aoc2021.day18
 
-sealed class TreeNumberPair {
+import org.antlr.runtime.tree.Tree
+import java.lang.IllegalArgumentException
+import kotlin.math.ceil
+import kotlin.math.floor
+
+sealed class TreeNumberPair(
+    protected var parent: TreeNumberPair? = null
+) {
     operator fun plus(other: TreeNumberPair): TreeNumberPair = TreePair(this, other)
 
-    open fun split(): TreeNumberPair = throw NotImplementedError("Not used")
+    fun reduce(): TreeNumberPair {
+        TODO()
+    }
 
-    open fun reduce(): TreeNumberPair = throw NotImplementedError("Not used")
+    fun split(): TreeNumberPair {
+        if (this !is TreeNumber) throw IllegalArgumentException("Only numbers can be split")
+        if (value < 10) throw IllegalArgumentException("Split is only for values >= 10: actual value = $value")
+        return TreePair(
+            TreeNumber(floor(value.toDouble() / 2).toInt()),
+            TreeNumber(ceil(value.toDouble() / 2).toInt())
+        )
+    }
+
+    fun explode(): TreeNumberPair {
+        if (this !is TreePair) throw IllegalArgumentException("Only pairs can be exploded")
+        if (this.left !is TreeNumber || this.right !is TreeNumber) throw IllegalArgumentException("Only pairs of numbers can be exploded")
+        val firstLeft = searchLeft(this)
+        val firstRight = searchRight(this)
+        if (firstLeft != null) {
+            if (firstLeft.left is TreeNumber) {
+                firstLeft.left = TreeNumber((firstLeft.left as TreeNumber).value + (this.left as TreeNumber).value)
+            }
+            if (firstLeft.right is TreeNumber) {
+                firstLeft.right = TreeNumber((firstLeft.right as TreeNumber).value + (this.left as TreeNumber).value)
+            }
+        }
+        if (firstRight != null) {
+            if (firstRight.left is TreeNumber) {
+                firstRight.left = TreeNumber((firstRight.left as TreeNumber).value + (this.right as TreeNumber).value)
+            }
+            if (firstRight.right is TreeNumber) {
+                firstRight.right = TreeNumber((firstRight.right as TreeNumber).value + (this.right as TreeNumber).value)
+            }
+        }
+        return TreeNumber(0)
+    }
 
     companion object {
-        fun treeFromString(string: String): TreeNumberPair {
+        private fun searchLeft(pair: TreePair): TreePair? {
+            var current = pair
+            while (current.parent != null) {
+                if ((current.parent as TreePair).left == current) {
+                    current = (current.parent as TreePair)
+                }
+                else return current.parent as TreePair
+            }
+            return null
+        }
+
+        private fun searchRight(pair: TreePair): TreePair? {
+            var current = pair
+            while (current.parent != null) {
+                if ((current.parent as TreePair).right == current) {
+                    current = (current.parent as TreePair)
+                }
+                else return current.parent as TreePair
+            }
+            return null
+        }
+
+        fun fromString(string: String): TreeNumberPair {
             val stack = ArrayDeque<TreeNumberParserStatus>()
             string.forEach { c ->
                 when (c) {
@@ -23,7 +85,10 @@ sealed class TreeNumberPair {
                             || second is TreeNumberBeginStatus
                         )
                             throw IllegalStateException("Invalid state for the stack")
-                        stack.addFirst(PairStatus(TreePair(first.getTreeNumber(), second.getTreeNumber())))
+                        val treePair = TreePair(first.getTreeNumberPair(), second.getTreeNumberPair())
+                        treePair.left.parent = treePair
+                        treePair.right.parent = treePair
+                        stack.addFirst(PairStatus(treePair))
                     }
                     ',' -> { }
                     else -> stack.addFirst(NumberStatus(TreeNumber(c.toString().toInt())))
@@ -32,7 +97,7 @@ sealed class TreeNumberPair {
             val result = stack.removeFirst()
             if (stack.size > 0) throw IllegalStateException("More than one element at the end of parsing")
             if (result is TreeNumberBeginStatus) throw IllegalStateException("Final element is a beginning")
-            return result.getTreeNumber()
+            return result.getTreeNumberPair()
         }
     }
 }
