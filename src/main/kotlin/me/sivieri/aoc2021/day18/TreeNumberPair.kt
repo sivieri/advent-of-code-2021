@@ -1,7 +1,5 @@
 package me.sivieri.aoc2021.day18
 
-import org.antlr.runtime.tree.Tree
-import java.lang.IllegalArgumentException
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -10,8 +8,35 @@ sealed class TreeNumberPair(
 ) {
     operator fun plus(other: TreeNumberPair): TreeNumberPair = TreePair(this, other)
 
+    @Suppress("KotlinConstantConditions")
     fun reduce(): TreeNumberPair {
-        TODO()
+        var pairToExplode: TreePair?
+        var numberToSplit: TreeNumber?
+        var root = this
+        do {
+            pairToExplode = searchPairToExplode(root)
+            if (pairToExplode != null) {
+                val parent = pairToExplode.parent!! as TreePair
+                if (pairToExplode == parent.left) parent.left = pairToExplode.explode()
+                if (pairToExplode == parent.right) parent.right = pairToExplode.explode()
+                numberToSplit = null
+            }
+            else {
+                numberToSplit = searchNumberToSplit(root)
+                if (numberToSplit != null) {
+                    if (numberToSplit.parent != null) {
+                        val parent = numberToSplit.parent!! as TreePair
+                        if (numberToSplit == parent.left) parent.left = numberToSplit.split()
+                        if (numberToSplit == parent.right) parent.right = numberToSplit.split()
+                    }
+                    else {
+                        root = numberToSplit.split()
+                    }
+
+                }
+            }
+        } while (pairToExplode != null && numberToSplit != null)
+        return root
     }
 
     fun split(): TreeNumberPair {
@@ -48,6 +73,14 @@ sealed class TreeNumberPair(
     }
 
     companion object {
+        private fun searchPairToExplode(root: TreeNumberPair): TreePair? {
+            TODO("Not yet implemented")
+        }
+
+        private fun searchNumberToSplit(root: TreeNumberPair): TreeNumber? {
+            TODO("Not yet implemented")
+        }
+
         private fun searchLeft(pair: TreePair): TreePair? {
             var current = pair
             while (current.parent != null) {
