@@ -6,7 +6,7 @@ import kotlin.math.floor
 sealed class TreeNumberPair(
     protected var parent: TreeNumberPair? = null
 ) {
-    operator fun plus(other: TreeNumberPair): TreeNumberPair = TreePair(this, other)
+    operator fun plus(other: TreeNumberPair): TreeNumberPair = TreePair(this, other).reduce()
 
     @Suppress("KotlinConstantConditions")
     fun reduce(): TreeNumberPair {
@@ -14,7 +14,7 @@ sealed class TreeNumberPair(
         var numberToSplit: TreeNumber?
         var root = this
         do {
-            pairToExplode = searchPairToExplode(root)
+            pairToExplode = searchPairToExplode(root, 0)
             if (pairToExplode != null) {
                 val parent = pairToExplode.parent!! as TreePair
                 if (pairToExplode == parent.left) parent.left = pairToExplode.explode()
@@ -35,7 +35,7 @@ sealed class TreeNumberPair(
 
                 }
             }
-        } while (pairToExplode != null && numberToSplit != null)
+        } while (pairToExplode != null || numberToSplit != null)
         return root
     }
 
@@ -54,31 +54,63 @@ sealed class TreeNumberPair(
         val firstLeft = searchLeft(this)
         val firstRight = searchRight(this)
         if (firstLeft != null) {
-            if (firstLeft.left is TreeNumber) {
-                firstLeft.left = TreeNumber((firstLeft.left as TreeNumber).value + (this.left as TreeNumber).value)
-            }
-            if (firstLeft.right is TreeNumber) {
-                firstLeft.right = TreeNumber((firstLeft.right as TreeNumber).value + (this.left as TreeNumber).value)
-            }
+            val number = searchFirstNumber(firstLeft.left)!!
+            val newNumber = TreeNumber(number.value + (this.left as TreeNumber).value)
+            if ((number.parent as TreePair).left == number) (number.parent as TreePair).left = newNumber
+            if ((number.parent as TreePair).right == number) (number.parent as TreePair).right = newNumber
         }
         if (firstRight != null) {
-            if (firstRight.left is TreeNumber) {
-                firstRight.left = TreeNumber((firstRight.left as TreeNumber).value + (this.right as TreeNumber).value)
-            }
-            if (firstRight.right is TreeNumber) {
-                firstRight.right = TreeNumber((firstRight.right as TreeNumber).value + (this.right as TreeNumber).value)
-            }
+            val number = searchFirstNumber(firstRight.right)!!
+            val newNumber = TreeNumber(number.value + (this.right as TreeNumber).value)
+            if ((number.parent as TreePair).left == number) (number.parent as TreePair).left = newNumber
+            if ((number.parent as TreePair).right == number) (number.parent as TreePair).right = newNumber
         }
         return TreeNumber(0)
     }
 
+    override fun toString(): String {
+        val buffer = StringBuffer()
+        stringHelper(this, buffer)
+        return buffer.toString()
+    }
+
     companion object {
-        private fun searchPairToExplode(root: TreeNumberPair): TreePair? {
-            TODO("Not yet implemented")
+        private fun stringHelper(root: TreeNumberPair, buffer: StringBuffer) {
+            when (root) {
+                is TreeNumber -> buffer.append(root.value)
+                is TreePair -> {
+                    buffer.append("[")
+                    stringHelper(root.left, buffer)
+                    buffer.append(",")
+                    stringHelper(root.right, buffer)
+                    buffer.append("]")
+                }
+                else -> {}
+            }
         }
 
-        private fun searchNumberToSplit(root: TreeNumberPair): TreeNumber? {
-            TODO("Not yet implemented")
+        private fun searchPairToExplode(root: TreeNumberPair, depth: Int): TreePair? = when (root) {
+            is TreeNumber -> null
+            is TreePair -> {
+                if (depth >= 4) root
+                else searchPairToExplode(root.left, depth + 1) ?: searchPairToExplode(root.right, depth + 1)
+            }
+            else -> null
+        }
+
+        private fun searchNumberToSplit(root: TreeNumberPair): TreeNumber? = when (root) {
+            is TreeNumber -> {
+                if (root.value >= 10) root
+                else null
+            }
+            is TreePair -> searchNumberToSplit(root.left) ?: searchNumberToSplit(root.right)
+            else -> null
+        }
+
+        private fun searchFirstNumber(root: TreeNumberPair): TreeNumber? = when (root) {
+            is TreeNumber -> root
+            is TreePair -> searchFirstNumber(root.left) ?: searchFirstNumber(root.right)
+            else -> null
         }
 
         private fun searchLeft(pair: TreePair): TreePair? {
