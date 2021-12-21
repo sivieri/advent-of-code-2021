@@ -65,20 +65,26 @@ sealed class TreeNumberPair(
         val firstLeft = searchLeft(this)
         val firstRight = searchRight(this)
         if (firstLeft != null) {
-            val number = searchFirstNumber(firstLeft.left)!!
+            val number = searchFirstRightNumber(firstLeft.left)!!
             val newNumber = TreeNumber(number.value + (this.left as TreeNumber).value)
             newNumber.parent = number.parent
             if ((number.parent as TreePair).left == number) (number.parent as TreePair).left = newNumber
             else if ((number.parent as TreePair).right == number) (number.parent as TreePair).right = newNumber
         }
         if (firstRight != null) {
-            val number = searchFirstNumber(firstRight.right)!!
+            val number = searchFirstLeftNumber(firstRight.right)!!
             val newNumber = TreeNumber(number.value + (this.right as TreeNumber).value)
             newNumber.parent = number.parent
             if ((number.parent as TreePair).left == number) (number.parent as TreePair).left = newNumber
             else if ((number.parent as TreePair).right == number) (number.parent as TreePair).right = newNumber
         }
         return TreeNumber(0)
+    }
+
+    fun magnitude(): Long = when (this) {
+        is TreeNumber -> this.value.toLong()
+        is TreePair -> 3 * this.left.magnitude() + 2 * this.right.magnitude()
+        else -> throw IllegalStateException("Magnitude exists only for pairs and numbers")
     }
 
     override fun toString(): String {
@@ -120,9 +126,15 @@ sealed class TreeNumberPair(
             else -> null
         }
 
-        private fun searchFirstNumber(root: TreeNumberPair): TreeNumber? = when (root) {
+        private fun searchFirstLeftNumber(root: TreeNumberPair): TreeNumber? = when (root) {
             is TreeNumber -> root
-            is TreePair -> searchFirstNumber(root.left) ?: searchFirstNumber(root.right)
+            is TreePair -> searchFirstLeftNumber(root.left) ?: searchFirstRightNumber(root.right)
+            else -> null
+        }
+
+        private fun searchFirstRightNumber(root: TreeNumberPair): TreeNumber? = when (root) {
+            is TreeNumber -> root
+            is TreePair -> searchFirstRightNumber(root.right) ?: searchFirstLeftNumber(root.left)
             else -> null
         }
 

@@ -1,19 +1,11 @@
 package me.sivieri.aoc2021.day18
 
-data class TreeNumber(val value: Int): TreeNumberPair() {
-    override fun toString(): String {
-        return super.toString()
-    }
-}
+class TreeNumber(val value: Int): TreeNumberPair()
 
-data class TreePair(
+class TreePair(
     var left: TreeNumberPair,
     var right: TreeNumberPair
-): TreeNumberPair() {
-    override fun toString(): String {
-        return super.toString()
-    }
-}
+): TreeNumberPair()
 
 object Null: TreeNumberPair()
 
