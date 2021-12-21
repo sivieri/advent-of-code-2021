@@ -6,7 +6,12 @@ import kotlin.math.floor
 sealed class TreeNumberPair(
     protected var parent: TreeNumberPair? = null
 ) {
-    operator fun plus(other: TreeNumberPair): TreeNumberPair = TreePair(this, other).reduce()
+    operator fun plus(other: TreeNumberPair): TreeNumberPair {
+        val pair = TreePair(this, other)
+        this.parent = pair
+        other.parent = pair
+        return pair.reduce()
+    }
 
     @Suppress("KotlinConstantConditions")
     fun reduce(): TreeNumberPair {
@@ -17,20 +22,24 @@ sealed class TreeNumberPair(
             pairToExplode = searchPairToExplode(root, 0)
             if (pairToExplode != null) {
                 val parent = pairToExplode.parent!! as TreePair
-                if (pairToExplode == parent.left) parent.left = pairToExplode.explode()
-                if (pairToExplode == parent.right) parent.right = pairToExplode.explode()
+                val exploded = pairToExplode.explode()
+                exploded.parent = pairToExplode.parent
+                if (pairToExplode == parent.left) parent.left = exploded
+                if (pairToExplode == parent.right) parent.right = exploded
                 numberToSplit = null
             }
             else {
                 numberToSplit = searchNumberToSplit(root)
                 if (numberToSplit != null) {
+                    val splitted = numberToSplit.split()
+                    splitted.parent = numberToSplit.parent
                     if (numberToSplit.parent != null) {
                         val parent = numberToSplit.parent!! as TreePair
-                        if (numberToSplit == parent.left) parent.left = numberToSplit.split()
-                        if (numberToSplit == parent.right) parent.right = numberToSplit.split()
+                        if (numberToSplit == parent.left) parent.left = splitted
+                        if (numberToSplit == parent.right) parent.right = splitted
                     }
                     else {
-                        root = numberToSplit.split()
+                        root = splitted
                     }
 
                 }
@@ -42,10 +51,12 @@ sealed class TreeNumberPair(
     fun split(): TreeNumberPair {
         if (this !is TreeNumber) throw IllegalArgumentException("Only numbers can be split")
         if (value < 10) throw IllegalArgumentException("Split is only for values >= 10: actual value = $value")
-        return TreePair(
-            TreeNumber(floor(value.toDouble() / 2).toInt()),
-            TreeNumber(ceil(value.toDouble() / 2).toInt())
-        )
+        val left = TreeNumber(floor(value.toDouble() / 2).toInt())
+        val right = TreeNumber(ceil(value.toDouble() / 2).toInt())
+        val pair = TreePair(left, right)
+        left.parent = pair
+        right.parent = pair
+        return pair
     }
 
     fun explode(): TreeNumberPair {
@@ -56,14 +67,16 @@ sealed class TreeNumberPair(
         if (firstLeft != null) {
             val number = searchFirstNumber(firstLeft.left)!!
             val newNumber = TreeNumber(number.value + (this.left as TreeNumber).value)
+            newNumber.parent = number.parent
             if ((number.parent as TreePair).left == number) (number.parent as TreePair).left = newNumber
-            if ((number.parent as TreePair).right == number) (number.parent as TreePair).right = newNumber
+            else if ((number.parent as TreePair).right == number) (number.parent as TreePair).right = newNumber
         }
         if (firstRight != null) {
             val number = searchFirstNumber(firstRight.right)!!
             val newNumber = TreeNumber(number.value + (this.right as TreeNumber).value)
+            newNumber.parent = number.parent
             if ((number.parent as TreePair).left == number) (number.parent as TreePair).left = newNumber
-            if ((number.parent as TreePair).right == number) (number.parent as TreePair).right = newNumber
+            else if ((number.parent as TreePair).right == number) (number.parent as TreePair).right = newNumber
         }
         return TreeNumber(0)
     }
