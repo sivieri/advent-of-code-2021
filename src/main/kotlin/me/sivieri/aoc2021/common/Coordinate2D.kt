@@ -7,7 +7,7 @@ data class Coordinate2D(
 
     companion object {
 
-        fun parseString(s: String, separator: String): Coordinate2D {
+        fun parseString(s: String, separator: String = ","): Coordinate2D {
             val (x, y) = s.split(separator, limit = 2)
             return Coordinate2D(x.toInt(), y.toInt())
         }
