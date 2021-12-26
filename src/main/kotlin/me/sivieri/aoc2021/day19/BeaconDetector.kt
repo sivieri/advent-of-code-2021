@@ -11,7 +11,20 @@ class BeaconDetector(
         .map { Scanner.fromString(it) }
 
     fun detect(): List<Coordinate3D> {
-        TODO()
+        val solved = mutableListOf(scanners.first())
+        var base = scanners.first()
+        scanners
+            .subList(1, scanners.size)
+            .forEach { scanner ->
+                if (!solved.contains(scanner)) {
+                    val result = base.compareWithScanner(scanner)
+                    if (result?.second != null) {
+                        base = base.addBeacons(scanner, result.second!!)
+                        solved.add(scanner)
+                    }
+                }
+            }
+        return base.beacons
     }
 
 }

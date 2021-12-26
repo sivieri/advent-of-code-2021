@@ -33,6 +33,9 @@ internal fun <T> List<T>.permutations(): List<List<T>> {
 internal fun <A, B> cartesianProduct(a: List<A>, b: List<B>): List<Pair<A, B>> =
     a.flatMap { aElement -> b.map { bElement -> aElement to bElement } }
 
+internal fun <A, B> Collection<A>.crossProduct(other: Collection<B>): List<Pair<A, B>> =
+    this.flatMap { aElement -> other.map { bElement -> aElement to bElement } }
+
 internal fun <T> cartesianProductOfThree(
     a: Collection<T>,
     b: Collection<T>,
