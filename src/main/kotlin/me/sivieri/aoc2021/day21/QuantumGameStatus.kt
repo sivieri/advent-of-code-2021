@@ -12,7 +12,7 @@ data class QuantumGameStatus(
             else player1.position + n
             QuantumGameStatus(
                 player1.copy(position = value, score = player1.score + value),
-                player2,
+                player2.copy(),
                 round + 1
             )
         }
@@ -20,13 +20,13 @@ data class QuantumGameStatus(
             val value = if (player2.position + n > BOARD_SIZE) player2.position + n - BOARD_SIZE
             else player2.position + n
             QuantumGameStatus(
-                player1,
+                player1.copy(),
                 player2.copy(position = value, score = player2.score + value),
                 round + 1
             )
         }
 
-    fun isWon(): Boolean = player1.score >= ENDGAME_SCORE || player2.score == ENDGAME_SCORE
+    fun isWon(): Boolean = player1.score >= ENDGAME_SCORE || player2.score >= ENDGAME_SCORE
 
     companion object {
         private const val BOARD_SIZE = 10

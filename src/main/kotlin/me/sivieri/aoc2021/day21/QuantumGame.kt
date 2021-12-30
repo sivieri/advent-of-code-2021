@@ -28,14 +28,14 @@ class QuantumGame(
         currentGames: MutableMap<QuantumGameStatus, Long>
     ) {
         if (game.isWon()) {
-            if (currentGames.containsKey(game)) currentGames[game] = currentGames[game]!! + count
-            else currentGames[game] = count
+            currentGames.merge(game, count, Long::plus)
         }
-        diceValues.forEach { (n, times) ->
-            val newGame = game.play(n)
-            val newCount = count * times
-            if (currentGames.containsKey(newGame)) currentGames[newGame] = currentGames[newGame]!! + newCount
-            else currentGames[newGame] = newCount
+        else {
+            diceValues.forEach { (n, times) ->
+                val newGame = game.play(n)
+                val newCount = count * times
+                currentGames.merge(newGame, newCount, Long::plus)
+            }
         }
     }
 
@@ -48,6 +48,8 @@ class QuantumGame(
             .entries
             .filter { it.key.player2.score >= QuantumGameStatus.ENDGAME_SCORE }
             .sumOf { it.value }
+        println(player1games)
+        println(player2games)
         return max(player1games, player2games)
     }
 
