@@ -9,6 +9,7 @@ object Main1 {
         val data = Utils.readInput(20)
         val enhancer = ImageEnhancer(data)
         val result = enhancer.enhance(2)
+        println(result.stringRepresentation())
         println(result.countLight())
     }
 

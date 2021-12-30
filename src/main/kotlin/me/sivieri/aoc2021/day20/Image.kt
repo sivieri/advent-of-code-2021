@@ -2,8 +2,8 @@ package me.sivieri.aoc2021.day20
 
 data class Image(
     val image: Array<Array<Char>>,
-    val x: Int,
-    val y: Int
+    val x: Int = image[0].size,
+    val y: Int = image.size
 ) {
 
     fun enhance(algorithm: Array<Char>): Image {
@@ -16,7 +16,7 @@ data class Image(
             line.map { algorithm[it] }.toTypedArray()
         }
             .toTypedArray()
-        return Image(output, x + 2, y + 2)
+        return Image(output)
     }
 
     private fun findPosition(x: Int, y: Int): Int {
@@ -44,9 +44,7 @@ data class Image(
     fun enlarge(size: Int): Image = Image(
         Array(size) { Array(x + size * 2) { DARK_PIXEL } } +
         image.map { (Array(size) { DARK_PIXEL } + it + Array(size) { DARK_PIXEL }) }.toTypedArray() +
-        Array(size) { Array(x + size * 2) { DARK_PIXEL } },
-        x + size * 2,
-        y + size * 2
+        Array(size) { Array(x + size * 2) { DARK_PIXEL } }
     )
 
     fun cut(size: Int): Image = Image(
@@ -59,9 +57,7 @@ data class Image(
                     .subList(size, line.size - size)
                     .toTypedArray()
             }
-            .toTypedArray(),
-        x - size * 2,
-        y - size * 2
+            .toTypedArray()
     )
 
     fun countLight(): Int =
@@ -103,7 +99,7 @@ data class Image(
                     line.toList().toTypedArray()
                 }
                 .toTypedArray()
-            return Image(data, data[0].size, data.size)
+            return Image(data)
         }
     }
 
