@@ -9,42 +9,46 @@ class QuantumGame(
     private var games = mutableMapOf(
         QuantumGameStatus(player1, player2, 0) to 1L
     )
-    private var player1games = 0L
-    private var player2games = 0L
 
     fun play() {
-        while (games.isNotEmpty()) {
+        while (games.keys.any { !it.isWon() }) {
             println("Cache: ${games.size}")
-            println("Player 1 wins: $player1games")
-            println("Player 2 wins: $player2games")
-            val currentGames = games
-                .flatMap { (game, repetitions) ->
-                    diceValues
-                        .entries
-                        .flatMap { (n, times) ->
-                            (0 until (times * repetitions)).map { _ ->
-                                game.play(n)
-                            }
-                        }
-                }
-            currentGames.forEach { game ->
-                if (games.containsKey(game)) games[game] = games[game]!! + 1L
-                else games[game] = 1L
+            val currentGames = mutableMapOf<QuantumGameStatus, Long>()
+            games.forEach { (game, count) ->
+                playGame(game, count, currentGames)
             }
-            val wonGames = games
-                .filter { (game, _) ->
-                    if (game.isWon()) {
-                        if (game.player1.score >= QuantumGameStatus.ENDGAME_SCORE) player1games++
-                        else player2games++
-                    }
-                    game.isWon()
-                }
-                .keys
-            wonGames.forEach { games.remove(it) }
+            games = currentGames
         }
     }
 
-    fun maxGames(): Long = max(player1games, player2games)
+    private fun playGame(
+        game: QuantumGameStatus,
+        count: Long,
+        currentGames: MutableMap<QuantumGameStatus, Long>
+    ) {
+        if (game.isWon()) {
+            if (currentGames.containsKey(game)) currentGames[game] = currentGames[game]!! + count
+            else currentGames[game] = count
+        }
+        diceValues.forEach { (n, times) ->
+            val newGame = game.play(n)
+            val newCount = count * times
+            if (currentGames.containsKey(newGame)) currentGames[newGame] = currentGames[newGame]!! + newCount
+            else currentGames[newGame] = newCount
+        }
+    }
+
+    fun maxGames(): Long {
+        val player1games = games
+            .entries
+            .filter { it.key.player1.score >= QuantumGameStatus.ENDGAME_SCORE }
+            .sumOf { it.value }
+        val player2games = games
+            .entries
+            .filter { it.key.player2.score >= QuantumGameStatus.ENDGAME_SCORE }
+            .sumOf { it.value }
+        return max(player1games, player2games)
+    }
 
     companion object {
         private val diceValues = mapOf(
