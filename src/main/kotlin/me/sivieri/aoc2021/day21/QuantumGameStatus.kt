@@ -1,8 +1,8 @@
 package me.sivieri.aoc2021.day21
 
 data class QuantumGameStatus(
-    val player1: DicePlayer,
-    val player2: DicePlayer,
+    val player1: QuantumDicePlayer,
+    val player2: QuantumDicePlayer,
     val round: Int
 ) {
 
@@ -12,7 +12,7 @@ data class QuantumGameStatus(
             else player1.position + n
             QuantumGameStatus(
                 player1.copy(position = value, score = player1.score + value),
-                player2.copy(),
+                player2,
                 round + 1
             )
         }
@@ -20,7 +20,7 @@ data class QuantumGameStatus(
             val value = if (player2.position + n > BOARD_SIZE) player2.position + n - BOARD_SIZE
             else player2.position + n
             QuantumGameStatus(
-                player1.copy(),
+                player1,
                 player2.copy(position = value, score = player2.score + value),
                 round + 1
             )

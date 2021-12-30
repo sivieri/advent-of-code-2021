@@ -3,8 +3,8 @@ package me.sivieri.aoc2021.day21
 import java.lang.Long.max
 
 class QuantumGame(
-    player1: DicePlayer,
-    player2: DicePlayer,
+    player1: QuantumDicePlayer,
+    player2: QuantumDicePlayer,
 ) {
     private var games = mutableMapOf(
         QuantumGameStatus(player1, player2, 0) to 1L
@@ -13,6 +13,7 @@ class QuantumGame(
     fun play() {
         while (games.keys.any { !it.isWon() }) {
             println("Cache: ${games.size}")
+            println("Not won yet: ${games.keys.count { !it.isWon() }}")
             val currentGames = mutableMapOf<QuantumGameStatus, Long>()
             games.forEach { (game, count) ->
                 playGame(game, count, currentGames)
