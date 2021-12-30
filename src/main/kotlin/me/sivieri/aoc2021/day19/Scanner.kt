@@ -4,7 +4,7 @@ import me.sivieri.aoc2021.common.Coordinate3D
 
 class Scanner(
     val id: Int,
-    val beacons: List<Coordinate3D>
+    val beacons: Set<Coordinate3D>
 ) {
 
     fun generateAllCombinations(): List<Scanner> =
@@ -47,7 +47,7 @@ class Scanner(
                     .firstOrNull { it.value >= COMPARISON_N }
                     ?.key
             }
-            .firstOrNull() { it.second != null }
+            .firstOrNull { it.second != null }
 
     fun addBeacons(scanner: Scanner, point: Coordinate3D): Scanner =
         Scanner(
@@ -84,10 +84,12 @@ class Scanner(
         private const val COMPARISON_N = 12
 
         fun fromString(input: String): Scanner {
-            val data = input.split("\n")
+            val data = input
+                .split("\n")
+                .filter { it.isNotBlank() }
             val (_, id) = data.first().trim(' ', '-').split(" ", limit = 2)
             val positions = data.subList(1, data.size).map { Coordinate3D.parseString(it) }
-            return Scanner(id.toInt(), positions)
+            return Scanner(id.toInt(), positions.toSet())
         }
 
         private fun generateInversion(scanner: Scanner, inversion: Map<Int, Int>): Scanner =
@@ -100,7 +102,7 @@ class Scanner(
                         data[inversion[2]]!!,
                         data[inversion[3]]!!,
                     )
-                }
+                }.toSet()
             )
 
         private fun generateSign(scanner: Scanner, x: Int, y: Int, z: Int): Scanner =
@@ -108,7 +110,7 @@ class Scanner(
                 scanner.id,
                 scanner.beacons.map { beacon ->
                     Coordinate3D(beacon.x * x, beacon.y * y, beacon.z * z)
-                }
+                }.toSet()
             )
     }
 }

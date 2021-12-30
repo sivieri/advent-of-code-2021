@@ -21,7 +21,7 @@ class ScannerTest {
         val scanner = Scanner.fromString(input)
         val expected = Scanner(
             0,
-            listOf(
+            setOf(
                 Coordinate3D(-1, -1, 1),
                 Coordinate3D(-2, -2, 2),
                 Coordinate3D(-3, -3, 3),
@@ -108,7 +108,7 @@ class ScannerTest {
             553,889,-390
         """.trimIndent())
         val result = scanner0.compareWithScanner(scanner1)
-        assertThat(result?.second, `is`(notNullValue()))
+        assertThat(result?.second, `is`(Coordinate3D(68, -1246, -43)))
     }
 
 }
