@@ -4,16 +4,15 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.Test
 
-class DiracDiceTest {
+class QuantumGameTest {
 
     @Test
-    fun `part 1 test`() {
+    fun `part 2 example`() {
         val player1 = DicePlayer(1, 4)
         val player2 = DicePlayer(2, 8)
-        val game = DiracDice(player1, player2, DeterministicDice())
+        val game = QuantumGame(player1, player2)
         game.play()
-        val loser = game.getLoser()
-        assertThat(loser.score * game.dice.rolls, `is`(739785))
+        assertThat(game.maxGames(), `is`(444356092776315))
     }
 
 }

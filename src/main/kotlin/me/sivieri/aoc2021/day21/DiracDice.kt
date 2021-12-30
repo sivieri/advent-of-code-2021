@@ -7,17 +7,13 @@ class DiracDice(
     private val player2: DicePlayer,
     val dice: Dice
 ) {
-    fun play(player1Position: Int, player2Position: Int) {
-        var p1 = player1Position
-        var p2 = player2Position
+    fun play() {
         while (true) {
-            val newP1 = roll(p1)
-            p1 = newP1
-            player1.score += newP1
+            player1.position = roll(player1.position)
+            player1.score += player1.position
             if (player1.score >= ENDGAME_SCORE) return
-            val newP2 = roll(p2)
-            p2 = newP2
-            player2.score += newP2
+            player2.position = roll(player2.position)
+            player2.score += player2.position
             if (player2.score >= ENDGAME_SCORE) return
         }
     }
