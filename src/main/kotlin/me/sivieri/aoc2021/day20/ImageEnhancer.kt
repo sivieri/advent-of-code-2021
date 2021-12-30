@@ -17,7 +17,7 @@ class ImageEnhancer(input: String) {
             println("Iteration $i")
             acc.enhance(algorithm)
         }
-        return enhanced.cut((iterations - 1) * 10)
+        return enhanced.cut(iterations)
     }
 
 }
