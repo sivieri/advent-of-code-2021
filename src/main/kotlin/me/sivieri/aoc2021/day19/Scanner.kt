@@ -4,7 +4,8 @@ import me.sivieri.aoc2021.common.Coordinate3D
 
 class Scanner(
     val id: Int,
-    val beacons: Set<Coordinate3D>
+    val beacons: Set<Coordinate3D>,
+    var position: Coordinate3D? = null
 ) {
 
     fun generateAllCombinations(): List<Scanner> =
@@ -78,7 +79,7 @@ class Scanner(
         return id
     }
 
-    override fun toString(): String = id.toString()
+    override fun toString(): String = "$id ($position)"
 
     companion object {
         private const val COMPARISON_N = 12

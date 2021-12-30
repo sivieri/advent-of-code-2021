@@ -1,6 +1,7 @@
 package me.sivieri.aoc2021.day19
 
 import me.sivieri.aoc2021.common.Coordinate3D
+import me.sivieri.aoc2021.crossProduct
 
 class BeaconDetector(
     input: String
@@ -11,8 +12,10 @@ class BeaconDetector(
         .map { Scanner.fromString(it) }
 
     fun detect(): Set<Coordinate3D> {
-        val solved = mutableListOf(scanners.first())
-        var base = scanners.first()
+        val initial = scanners.first()
+        initial.position = Coordinate3D.ORIGIN
+        val solved = mutableListOf(initial)
+        var base = initial
         while (solved.size < scanners.size) {
             scanners
                 .forEach { scanner ->
@@ -20,12 +23,21 @@ class BeaconDetector(
                         val result = base.compareWithScanner(scanner)
                         if (result?.second != null) {
                             base = base.addBeacons(result.first, result.second!!)
+                            scanner.position = result.second
                             solved.add(scanner)
                         }
                     }
                 }
         }
         return base.beacons
+    }
+
+    fun findLargestManhattanDistance(): Int {
+        detect()
+        val positions = scanners.map { it.position!! }
+        return positions
+            .crossProduct(positions)
+            .maxOf { it.first.manhattanDistance(it.second) }
     }
 
 }

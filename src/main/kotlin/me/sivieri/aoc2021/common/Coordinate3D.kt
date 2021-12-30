@@ -1,6 +1,7 @@
 package me.sivieri.aoc2021.common
 
 import kotlin.math.pow
+import kotlin.math.abs
 
 data class Coordinate3D(
     val x: Int,
@@ -14,8 +15,11 @@ data class Coordinate3D(
         return thisDistance.compareTo(otherDistance)
     }
 
-    fun distance(other: Coordinate3D): Int =
+    private fun distance(other: Coordinate3D): Int =
         kotlin.math.sqrt((other.x - x).toDouble().pow(2) + (other.y - y).toDouble().pow(2) + (other.y - y).toDouble().pow(2)).toInt()
+
+    fun manhattanDistance(other: Coordinate3D): Int =
+        abs(x - other.x) + abs(y - other.y) + abs(z - other.z)
 
     operator fun minus(other: Coordinate3D): Coordinate3D =
         Coordinate3D(
@@ -25,7 +29,7 @@ data class Coordinate3D(
         )
 
     companion object {
-        private val ORIGIN = Coordinate3D(0, 0, 0)
+        val ORIGIN = Coordinate3D(0, 0, 0)
 
         fun parseString(s: String, separator: String = ","): Coordinate3D {
             val (x, y, z) = s.split(separator, limit = 3)
