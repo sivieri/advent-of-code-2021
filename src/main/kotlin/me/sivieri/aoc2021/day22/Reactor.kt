@@ -8,6 +8,15 @@ class Reactor {
 
     fun reboot(input: List<String>, limit: Int? = null) {
         val instructions = InstructionParser().parse(input, limit = limit)
+        if (limit == null) {
+            rebootLarge(instructions)
+        }
+        else {
+            rebootSmall(instructions)
+        }
+    }
+
+    private fun rebootSmall(instructions: List<Instruction>) {
         instructions
             .forEach { instruction ->
                 val cubes = instruction.generateCubes()
@@ -20,6 +29,12 @@ class Reactor {
             }
     }
 
-    fun countActiveCubes() = activeCubes.size
+    private fun rebootLarge(instructions: List<Instruction>) {
+        TODO()
+    }
+
+    fun countActiveCubes(): Long =
+        if (activeCubes.isNotEmpty()) activeCubes.size.toLong()
+        else TODO()
 
 }
