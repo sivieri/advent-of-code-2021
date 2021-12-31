@@ -2,6 +2,7 @@ package me.sivieri.aoc2021.day22
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
+import org.junit.Ignore
 import org.junit.Test
 
 class ReactorTest {
@@ -15,7 +16,7 @@ class ReactorTest {
             on x=10..10,y=10..10,z=10..10
         """.trimIndent().split("\n")
         val reactor = Reactor()
-        reactor.reboot(input, limit = 20)
+        reactor.reboot(input)
         val result = reactor.countActiveCubes()
         assertThat(result, `is`(39))
     }
