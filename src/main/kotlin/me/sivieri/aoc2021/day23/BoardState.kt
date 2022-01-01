@@ -77,4 +77,53 @@ data class BoardState(
             else -> "."
         }
 
+    companion object {
+
+        fun fromString(s: String): BoardState {
+            val (_, hallway, side1, side2, _) = s.split("\n", limit = 5)
+            val positions = mutableMapOf<Int, String>()
+            hallway
+                .toList()
+                .forEachIndexed { index, c ->
+                    when (c) {
+                        'A' -> positions[index] = "A"
+                        'B' -> positions[index] = "B"
+                        'C' -> positions[index] = "C"
+                        'D' -> positions[index] = "D"
+                        else -> { }
+                    }
+                }
+            if (side1[3] != '.') positions[12] = side1[3].toString()
+            if (side1[5] != '.') positions[13] = side1[5].toString()
+            if (side1[7] != '.') positions[14] = side1[7].toString()
+            if (side1[9] != '.') positions[15] = side1[9].toString()
+            if (side2[3] != '.') positions[16] = side2[3].toString()
+            if (side2[5] != '.') positions[17] = side2[5].toString()
+            if (side2[7] != '.') positions[18] = side2[7].toString()
+            if (side2[9] != '.') positions[19] = side2[9].toString()
+            val a = positions
+                .filter { it.value == "A" }
+                .keys
+                .toList()
+                .let { Pair(it[0], it[1]) }
+            val b = positions
+                .filter { it.value == "B" }
+                .keys
+                .toList()
+                .let { Pair(it[0], it[1]) }
+            val c = positions
+                .filter { it.value == "C" }
+                .keys
+                .toList()
+                .let { Pair(it[0], it[1]) }
+            val d = positions
+                .filter { it.value == "D" }
+                .keys
+                .toList()
+                .let { Pair(it[0], it[1]) }
+            return BoardState(a, b, c, d)
+        }
+
+    }
+
 }
