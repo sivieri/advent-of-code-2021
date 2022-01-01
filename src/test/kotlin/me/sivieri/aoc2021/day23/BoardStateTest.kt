@@ -42,4 +42,17 @@ class BoardStateTest {
         assertThat(BoardState.fromString(boardString), `is`(expected))
     }
 
+    @Test
+    fun `test graph parsing`() {
+        val boardState = BoardState(
+            Pair(12, 16),
+            Pair(13, 17),
+            Pair(14, 18),
+            Pair(15, 19),
+            0
+        )
+        val graph = GraphHelper.generateGraph(boardState)
+        assertThat(BoardState.fromGraph(graph, 0), `is`(boardState))
+    }
+
 }

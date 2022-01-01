@@ -1,5 +1,8 @@
 package me.sivieri.aoc2021.day23
 
+import org.jgrapht.Graph
+import org.jgrapht.graph.DefaultEdge
+
 /**
  * #############
  * #...........#
@@ -132,6 +135,29 @@ data class BoardState(
                 .toList()
                 .let { Pair(it[0], it[1]) }
             return BoardState(a, b, c, d, 0)
+        }
+
+        fun fromGraph(graph: Graph<BoardCell, DefaultEdge>, cost: Int): BoardState {
+            val amphipods = graph
+                .vertexSet()
+                .filter { it.amphipod != null }
+            val a = amphipods
+                .filter { it.amphipod == Amphipod.AMBER }
+                .map { it.index }
+                .let { Pair(it[0], it[1]) }
+            val b = amphipods
+                .filter { it.amphipod == Amphipod.BRONZE }
+                .map { it.index }
+                .let { Pair(it[0], it[1]) }
+            val c = amphipods
+                .filter { it.amphipod == Amphipod.COPPER }
+                .map { it.index }
+                .let { Pair(it[0], it[1]) }
+            val d = amphipods
+                .filter { it.amphipod == Amphipod.DESERT }
+                .map { it.index }
+                .let { Pair(it[0], it[1]) }
+            return BoardState(a, b, c, d, cost)
         }
 
     }

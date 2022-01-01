@@ -1,5 +1,6 @@
 package me.sivieri.aoc2021.day23
 
+import me.sivieri.aoc2021.getOtherVertex
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultEdge
 
@@ -36,9 +37,24 @@ class BurrowSolver(input: String) {
 
     private fun generateCellMoves(
         graph: Graph<BoardCell, DefaultEdge>,
-        cell: BoardCell
+        sourceCell: BoardCell
     ): List<BoardState> {
-        TODO("Not yet implemented")
+        return graph
+            .edgesOf(sourceCell)
+            .map { edge ->
+                graph.getOtherVertex(sourceCell, edge)
+            }
+            .filter { it.amphipod == null }
+            .map { destinationCell ->
+                val amphipod = sourceCell.amphipod
+                destinationCell.amphipod = amphipod
+                sourceCell.amphipod = null
+                val state = BoardState.fromGraph(graph, destinationCell.amphipod!!.cost)
+                sourceCell.amphipod = amphipod
+                destinationCell.amphipod = null
+                state
+            }
+        // TODO rules
     }
 
 }
