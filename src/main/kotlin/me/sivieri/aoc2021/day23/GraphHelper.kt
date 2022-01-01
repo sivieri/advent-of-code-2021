@@ -71,16 +71,16 @@ object GraphHelper {
         return g
     }
 
-    private fun checkState(state: BoardState, index: Int): Char? =
+    private fun checkState(state: BoardState, index: Int): Amphipod? =
         when {
-            state.a.first == index -> 'A'
-            state.a.second == index -> 'A'
-            state.b.first == index -> 'B'
-            state.b.second == index -> 'B'
-            state.c.first == index -> 'C'
-            state.c.second == index -> 'C'
-            state.d.first == index -> 'D'
-            state.d.second == index -> 'D'
+            state.a.first == index -> Amphipod.AMBER
+            state.a.second == index -> Amphipod.AMBER
+            state.b.first == index -> Amphipod.BRONZE
+            state.b.second == index -> Amphipod.BRONZE
+            state.c.first == index -> Amphipod.COPPER
+            state.c.second == index -> Amphipod.COPPER
+            state.d.first == index -> Amphipod.DESERT
+            state.d.second == index -> Amphipod.DESERT
             else -> null
         }
 
