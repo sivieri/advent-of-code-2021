@@ -64,8 +64,17 @@ data class BoardState(
         ).joinToString("\n")
     }
 
-    private fun getCell(index: Int): String {
-        TODO("Not yet implemented")
-    }
+    private fun getCell(index: Int): String =
+        when {
+            a.first == index -> "A"
+            a.second == index -> "A"
+            b.first == index -> "B"
+            b.second == index -> "B"
+            c.first == index -> "C"
+            c.second == index -> "C"
+            d.first == index -> "D"
+            d.second == index -> "D"
+            else -> "."
+        }
 
 }
