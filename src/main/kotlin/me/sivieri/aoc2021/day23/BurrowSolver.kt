@@ -42,19 +42,31 @@ class BurrowSolver(input: String) {
         return graph
             .edgesOf(sourceCell)
             .map { edge ->
-                graph.getOtherVertex(sourceCell, edge)
+                graph.getOtherVertex(sourceCell, edge) to sourceCell.amphipod!!.cost
             }
-            .filter { it.amphipod == null }
-            .map { destinationCell ->
+            .filter { it.first.amphipod == null } // RULE: unoccupied space
+            .flatMap { (cell, cost) -> // RULE: do not stop outside a room
+                if (OUTSIDE_CELLS.contains(cell.index)) {
+                    graph.edgesOf(cell).map { edge ->
+                        graph.getOtherVertex(cell, edge) to cost * 2
+                    }
+                }
+                else listOf(cell to cost)
+            }
+            .map { (destinationCell, cost) ->
                 val amphipod = sourceCell.amphipod
                 destinationCell.amphipod = amphipod
                 sourceCell.amphipod = null
-                val state = BoardState.fromGraph(graph, destinationCell.amphipod!!.cost)
+                val state = BoardState.fromGraph(graph, cost)
                 sourceCell.amphipod = amphipod
                 destinationCell.amphipod = null
                 state
             }
         // TODO rules
+    }
+
+    companion object {
+        private val OUTSIDE_CELLS = listOf(3, 5, 7, 9)
     }
 
 }
