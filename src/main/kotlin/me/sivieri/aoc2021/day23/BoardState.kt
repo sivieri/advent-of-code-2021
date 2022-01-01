@@ -84,6 +84,7 @@ data class BoardState(
     fun isSolved() = this == SOLUTION
 
     companion object {
+        val HALLWAY = 1..11
         private val SOLUTION = fromString(
             "#############\n" +
             "#...........#\n" +
@@ -137,10 +138,11 @@ data class BoardState(
             return BoardState(a, b, c, d, 0)
         }
 
-        fun fromGraph(graph: Graph<BoardCell, DefaultEdge>, cost: Int): BoardState {
+        fun fromGraph(graph: Graph<BoardCell, DefaultEdge>, cost: Int): BoardState? {
             val amphipods = graph
                 .vertexSet()
                 .filter { it.amphipod != null }
+            if (amphipods.size != 8) return null
             val a = amphipods
                 .filter { it.amphipod == Amphipod.AMBER }
                 .map { it.index }

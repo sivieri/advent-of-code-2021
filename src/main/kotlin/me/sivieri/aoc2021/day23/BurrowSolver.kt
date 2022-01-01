@@ -39,21 +39,38 @@ class BurrowSolver(input: String) {
         graph: Graph<BoardCell, DefaultEdge>,
         sourceCell: BoardCell
     ): List<BoardState> {
+        val sourceAmphipod = sourceCell.amphipod!!
         return graph
             .edgesOf(sourceCell)
             .map { edge ->
-                graph.getOtherVertex(sourceCell, edge) to sourceCell.amphipod!!.cost
+                graph.getOtherVertex(sourceCell, edge) to sourceAmphipod.cost
             }
             .filter { it.first.amphipod == null } // RULE: unoccupied space
             .flatMap { (cell, cost) -> // RULE: do not stop outside a room
                 if (OUTSIDE_CELLS.contains(cell.index)) {
-                    graph.edgesOf(cell).map { edge ->
-                        graph.getOtherVertex(cell, edge) to cost * 2
-                    }
+                    graph.edgesOf(cell)
+                        .map { edge ->
+                            graph.getOtherVertex(cell, edge) to cost * 2
+                        }
+                        .filter { it.first != sourceCell }
                 }
                 else listOf(cell to cost)
             }
-            .map { (destinationCell, cost) ->
+            .filter { (cell, _) -> // RULE: enter only the final room
+                (
+                    BoardState.HALLWAY.contains(sourceCell.index) &&
+                    sourceAmphipod.roomIndexes.contains(cell.index)
+                ) || BoardState.HALLWAY.contains(cell.index)
+            }
+            .filter { (cell, _) -> // RULE: enter the room only if other final pods are in
+                val rooms = sourceAmphipod.roomIndexes
+                val vertices = graph
+                    .vertexSet()
+                    .filter { rooms.contains(it.index) }
+                vertices.all { it.amphipod == null || it.amphipod == sourceAmphipod } ||
+                BoardState.HALLWAY.contains(cell.index)
+            }
+            .mapNotNull { (destinationCell, cost) ->
                 val amphipod = sourceCell.amphipod
                 destinationCell.amphipod = amphipod
                 sourceCell.amphipod = null
@@ -62,7 +79,6 @@ class BurrowSolver(input: String) {
                 destinationCell.amphipod = null
                 state
             }
-        // TODO rules
     }
 
     companion object {
