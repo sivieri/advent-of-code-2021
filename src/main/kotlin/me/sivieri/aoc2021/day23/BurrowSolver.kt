@@ -23,12 +23,21 @@ class BurrowSolver(input: String) {
             currentMin = states
                 .filter { it.key.isSolved() }
                 .entries
-                .minOf { it.value }
+                .minOfOrNull { it.value } ?: Int.MAX_VALUE
         }
         return currentMin
     }
 
-    private fun generateMoves(graph: Graph<BoardCell, DefaultEdge>): List<BoardState> {
+    private fun generateMoves(graph: Graph<BoardCell, DefaultEdge>): List<BoardState> =
+        graph
+            .vertexSet()
+            .filter { it.amphipod != null }
+            .flatMap { cell -> generateCellMoves(graph, cell) }
+
+    private fun generateCellMoves(
+        graph: Graph<BoardCell, DefaultEdge>,
+        cell: BoardCell
+    ): List<BoardState> {
         TODO("Not yet implemented")
     }
 
