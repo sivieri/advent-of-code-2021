@@ -17,7 +17,8 @@ data class BoardState(
     val a: Pair<Int, Int>,
     val b: Pair<Int, Int>,
     val c: Pair<Int, Int>,
-    val d: Pair<Int, Int>
+    val d: Pair<Int, Int>,
+    val cost: Int
 ) {
 
     fun stringRepresentation(): String {
@@ -77,7 +78,16 @@ data class BoardState(
             else -> "."
         }
 
+    fun isSolved() = this == SOLUTION
+
     companion object {
+        private val SOLUTION = fromString(
+            "#############\n" +
+            "#...........#\n" +
+            "###A#B#C#D###\n" +
+            "  #A#B#C#D#  \n" +
+            "  #########  "
+        )
 
         fun fromString(s: String): BoardState {
             val (_, hallway, side1, side2, _) = s.split("\n", limit = 5)
@@ -121,7 +131,7 @@ data class BoardState(
                 .keys
                 .toList()
                 .let { Pair(it[0], it[1]) }
-            return BoardState(a, b, c, d)
+            return BoardState(a, b, c, d, 0)
         }
 
     }

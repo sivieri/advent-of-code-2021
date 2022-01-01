@@ -18,7 +18,8 @@ class BoardStateTest {
             Pair(12, 16),
             Pair(13, 17),
             Pair(14, 18),
-            Pair(15, 19)
+            Pair(15, 19),
+            0
         )
         assertThat(boardState.stringRepresentation(), `is`(expected))
     }
@@ -27,15 +28,16 @@ class BoardStateTest {
     fun `test string parsing`() {
         val boardString =
             "#############\n" +
-                "#...........#\n" +
-                "###A#B#C#D###\n" +
-                "  #A#B#C#D#  \n" +
-                "  #########  "
+            "#...........#\n" +
+            "###A#B#C#D###\n" +
+            "  #A#B#C#D#  \n" +
+            "  #########  "
         val expected = BoardState(
             Pair(12, 16),
             Pair(13, 17),
             Pair(14, 18),
-            Pair(15, 19)
+            Pair(15, 19),
+            0
         )
         assertThat(BoardState.fromString(boardString), `is`(expected))
     }
