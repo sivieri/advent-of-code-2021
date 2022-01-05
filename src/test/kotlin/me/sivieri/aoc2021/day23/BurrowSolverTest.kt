@@ -68,7 +68,7 @@ class BurrowSolverTest {
             "  #A#B#C#D#  \n" +
             "  #########  "
         )
-        val result = solver.solve(10) { iteration, states ->
+        val result = solver.solve(2) { iteration, states ->
             val b = expected[iteration]!!
             val board = BoardStateWithCost.fromString(b).toBoardState()
             println("Expected board $board exists: ${states.containsKey(board)}, cost: ${states.getOrDefault(board, -1)}")

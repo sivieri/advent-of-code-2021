@@ -8,7 +8,7 @@ object Main1 {
     fun main(args: Array<String>) {
         val data = Utils.readInput(23)
         val solver = BurrowSolver(data)
-        val result = solver.solve(1000)
+        val result = solver.solve(5)
         println(result)
     }
 

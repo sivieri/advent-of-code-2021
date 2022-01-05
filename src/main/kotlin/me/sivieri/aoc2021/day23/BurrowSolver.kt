@@ -6,9 +6,11 @@ class BurrowSolver(input: String) {
     private val states = mutableMapOf(initialState to 0)
     private var currentMin = Int.MAX_VALUE
 
-    fun solve(limit: Int, inspection: (Int, Map<BoardState, Int>) -> Unit = { _, _ -> }): Int {
-        (1..limit).forEach { iteration ->
-            println("Iteration $iteration, states ${states.size}, solved ${states.filter { it.key.isSolved() }.size}")
+    fun solve(historySize: Int, inspection: (Int, Map<BoardState, Int>) -> Unit = { _, _ -> }): Int {
+        var history = List(historySize) { Int.MAX_VALUE }
+        var iteration = 1
+        while (!isStable(history)) {
+            println("Iteration $iteration, states ${states.size}, solved ${states.filter { it.key.isSolved() }.size}, min: $currentMin")
             val newStates = calculateNewStates()
             states.putAll(newStates)
             currentMin = states
@@ -16,9 +18,15 @@ class BurrowSolver(input: String) {
                 .entries
                 .minOfOrNull { it.value } ?: Int.MAX_VALUE
             inspection(iteration, states)
+            history = updateHistory(history)
+            iteration++
         }
         return currentMin
     }
+
+    private fun updateHistory(history: List<Int>): List<Int> = listOf(currentMin) + history.subList(0, history.size - 1)
+
+    private fun isStable(history: List<Int>): Boolean = history.all { it != Int.MAX_VALUE } && history.distinct().size == 1
 
     fun calculateNewStates(): Map<BoardState, Int> = states
         .map { (boardState, cost) ->
