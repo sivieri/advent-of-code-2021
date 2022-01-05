@@ -72,16 +72,31 @@ object GraphHelper {
     }
 
     private fun checkState(state: BoardState, index: Int): Amphipod? =
-        when {
-            state.a.first == index -> Amphipod.AMBER
-            state.a.second == index -> Amphipod.AMBER
-            state.b.first == index -> Amphipod.BRONZE
-            state.b.second == index -> Amphipod.BRONZE
-            state.c.first == index -> Amphipod.COPPER
-            state.c.second == index -> Amphipod.COPPER
-            state.d.first == index -> Amphipod.DESERT
-            state.d.second == index -> Amphipod.DESERT
-            else -> null
-        }
+        state.positions[index]
+
+    fun generateDirectedGraph(state: BoardState): Graph<BoardCell, DefaultEdge> {
+        val connections = mapOf(
+            1 to listOf(2),
+            2 to listOf(1, 3),
+            3 to listOf(2, 4, 12),
+            4 to listOf(3, 5),
+            5 to listOf(4, 6, 13),
+            6 to listOf(5, 7),
+            7 to listOf(6, 8, 14),
+            8 to listOf(7, 9),
+            9 to listOf(8, 10, 15),
+            10 to listOf(9, 11),
+            11 to listOf(10),
+            12 to listOf(3, 16),
+            13 to listOf(5, 17),
+            14 to listOf(7, 18),
+            15 to listOf(9, 19),
+            16 to listOf(12),
+            17 to listOf(13),
+            18 to listOf(14),
+            19 to listOf(15)
+        )
+        TODO()
+    }
 
 }

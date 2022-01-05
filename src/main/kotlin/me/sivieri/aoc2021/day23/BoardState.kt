@@ -1,8 +1,5 @@
 package me.sivieri.aoc2021.day23
 
-import org.jgrapht.Graph
-import org.jgrapht.graph.DefaultEdge
-
 /**
  * #############
  * #...........#
@@ -17,12 +14,15 @@ import org.jgrapht.graph.DefaultEdge
  *       16    17    18    19
  */
 data class BoardState(
-    val a: Pair<Int, Int>,
-    val b: Pair<Int, Int>,
-    val c: Pair<Int, Int>,
-    val d: Pair<Int, Int>,
+    val positions: Map<Int, Amphipod>,
     val cost: Int
 ) {
+
+    fun generateValidMoves(): List<BoardState> {
+        val g = GraphHelper.generateGraph(this)
+
+        TODO()
+    }
 
     fun stringRepresentation(): String {
         val firstLine = List(13) { "#" }
@@ -69,22 +69,13 @@ data class BoardState(
     }
 
     private fun getCell(index: Int): String =
-        when {
-            a.first == index -> "A"
-            a.second == index -> "A"
-            b.first == index -> "B"
-            b.second == index -> "B"
-            c.first == index -> "C"
-            c.second == index -> "C"
-            d.first == index -> "D"
-            d.second == index -> "D"
-            else -> "."
-        }
+        positions[index]?.symbol?.toString() ?: "."
 
     fun isSolved() = this == SOLUTION
 
     companion object {
-        val HALLWAY = 1..11
+        private val HALLWAY = (1..11).toList()
+        private val OUTSIDE_VALUES = listOf(3, 5, 7, 9)
         private val SOLUTION = fromString(
             "#############\n" +
             "#...........#\n" +
@@ -95,71 +86,22 @@ data class BoardState(
 
         fun fromString(s: String): BoardState {
             val (_, hallway, side1, side2, _) = s.split("\n", limit = 5)
-            val positions = mutableMapOf<Int, String>()
+            val positions = mutableMapOf<Int, Amphipod>()
             hallway
                 .toList()
                 .forEachIndexed { index, c ->
-                    when (c) {
-                        'A' -> positions[index] = "A"
-                        'B' -> positions[index] = "B"
-                        'C' -> positions[index] = "C"
-                        'D' -> positions[index] = "D"
-                        else -> { }
-                    }
+                    val amphipod = Amphipod.fromSymbolOrNull(c)
+                    if (amphipod != null) positions[index] = amphipod
                 }
-            if (side1[3] != '.') positions[12] = side1[3].toString()
-            if (side1[5] != '.') positions[13] = side1[5].toString()
-            if (side1[7] != '.') positions[14] = side1[7].toString()
-            if (side1[9] != '.') positions[15] = side1[9].toString()
-            if (side2[3] != '.') positions[16] = side2[3].toString()
-            if (side2[5] != '.') positions[17] = side2[5].toString()
-            if (side2[7] != '.') positions[18] = side2[7].toString()
-            if (side2[9] != '.') positions[19] = side2[9].toString()
-            val a = positions
-                .filter { it.value == "A" }
-                .keys
-                .toList()
-                .let { Pair(it[0], it[1]) }
-            val b = positions
-                .filter { it.value == "B" }
-                .keys
-                .toList()
-                .let { Pair(it[0], it[1]) }
-            val c = positions
-                .filter { it.value == "C" }
-                .keys
-                .toList()
-                .let { Pair(it[0], it[1]) }
-            val d = positions
-                .filter { it.value == "D" }
-                .keys
-                .toList()
-                .let { Pair(it[0], it[1]) }
-            return BoardState(a, b, c, d, 0)
-        }
-
-        fun fromGraph(graph: Graph<BoardCell, DefaultEdge>, cost: Int): BoardState? {
-            val amphipods = graph
-                .vertexSet()
-                .filter { it.amphipod != null }
-            if (amphipods.size != 8) return null
-            val a = amphipods
-                .filter { it.amphipod == Amphipod.AMBER }
-                .map { it.index }
-                .let { Pair(it[0], it[1]) }
-            val b = amphipods
-                .filter { it.amphipod == Amphipod.BRONZE }
-                .map { it.index }
-                .let { Pair(it[0], it[1]) }
-            val c = amphipods
-                .filter { it.amphipod == Amphipod.COPPER }
-                .map { it.index }
-                .let { Pair(it[0], it[1]) }
-            val d = amphipods
-                .filter { it.amphipod == Amphipod.DESERT }
-                .map { it.index }
-                .let { Pair(it[0], it[1]) }
-            return BoardState(a, b, c, d, cost)
+            if (Amphipod.fromSymbolOrNull(side1[3]) != null) positions[12] = Amphipod.fromSymbolOrNull(side1[3])!!
+            if (Amphipod.fromSymbolOrNull(side1[5]) != null) positions[13] = Amphipod.fromSymbolOrNull(side1[5])!!
+            if (Amphipod.fromSymbolOrNull(side1[7]) != null) positions[14] = Amphipod.fromSymbolOrNull(side1[7])!!
+            if (Amphipod.fromSymbolOrNull(side1[9]) != null) positions[15] = Amphipod.fromSymbolOrNull(side1[9])!!
+            if (Amphipod.fromSymbolOrNull(side2[3]) != null) positions[16] = Amphipod.fromSymbolOrNull(side2[3])!!
+            if (Amphipod.fromSymbolOrNull(side2[5]) != null) positions[17] = Amphipod.fromSymbolOrNull(side2[5])!!
+            if (Amphipod.fromSymbolOrNull(side2[7]) != null) positions[18] = Amphipod.fromSymbolOrNull(side2[7])!!
+            if (Amphipod.fromSymbolOrNull(side2[9]) != null) positions[19] = Amphipod.fromSymbolOrNull(side2[9])!!
+            return BoardState(positions.toMap(), 0)
         }
 
     }
