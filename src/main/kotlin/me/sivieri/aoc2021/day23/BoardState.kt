@@ -1,5 +1,7 @@
 package me.sivieri.aoc2021.day23
 
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath
+
 /**
  * #############
  * #...........#
@@ -12,15 +14,78 @@ package me.sivieri.aoc2021.day23
  * 01 02 03 04 05 06 07 08 09 10 11
  *       12    13    14    15
  *       16    17    18    19
+ *
+ * Rules:
+ * 1. move up, down, left or right
+ * 2. do not move in or through an occupied space
+ * 3. do not stop outside a room
+ * 4. do not move in a room different from their final destination
+ * 5. do not move in the final destination unless there are similar amphipods
+ * 6. do not move remaining in the hallway, unless it is the only amphipod moving
+ * 7. move out of your room if there is something different below or it is empty
  */
 data class BoardState(
     val positions: Map<Int, Amphipod>,
     val cost: Int
 ) {
 
-    fun generateValidMoves(): List<BoardState> {
-        TODO()
+    fun generateValidMoves(): List<BoardState> =
+        positions.flatMap { (index, amphipod) ->
+            val g = GraphHelper.generateDirectedGraph(this, index) // RULE 1
+            val validPositions = searchValidSpace(amphipod, index)
+            validPositions
+                .mapNotNull { position ->
+                    val path = DijkstraShortestPath
+                        .findPathBetween(g, BoardCell(index, amphipod), BoardCell(position, null))
+                    if (path.vertexList.any { it.amphipod != null && it.amphipod != amphipod }) null // RULE 2
+                    else {
+                        val updatedCost = path
+                            .length * amphipod.cost + cost
+                        this.copy(
+                            positions = positions + mapOf(position to amphipod) - index,
+                            cost = updatedCost
+                        )
+                    }
+                }
+        }
+
+    fun searchValidSpace(
+        amphipod: Amphipod,
+        index: Int
+    ): Set<Int> {
+        if (
+            amphipod.roomIndexes.contains(index) && // RULE 7
+            positions[amphipod.roomIndexes.maxOrNull()!!] == amphipod
+        ) return emptySet()
+        val validRooms = searchValidRoomSpace(amphipod)
+        val validHallway = searchValidHallwaySpace(index)
+        val validPositions = validRooms + validHallway
+        return validPositions.filter { it != index }.toSet()
     }
+
+    fun searchValidRoomSpace(amphipod: Amphipod): Set<Int> =
+        amphipod
+            .roomIndexes // RULE 4
+            .let { set ->
+                val isRoomOccupied = positions
+                    .filter { it.value != amphipod }
+                    .any { set.contains(it.key) } // RULE 5
+                if (isRoomOccupied) emptySet()
+                else set
+            }
+            .filter { positions[it] == null } // RULE 2
+            .toSet()
+
+    fun searchValidHallwaySpace(index: Int): Set<Int> =
+        (HALLWAY - OUTSIDE_VALUES) // RULE 3
+            .let { set ->
+                val isHallwayOccupied = positions
+                    .any { HALLWAY.contains(it.key) && it.key != index && HALLWAY.contains(index) } // RULE 6
+                if (isHallwayOccupied) emptySet()
+                else set
+            }
+            .filter { positions[it] == null } // RULE 2
+            .toSet()
 
     fun stringRepresentation(): String {
         val firstLine = List(13) { "#" }
@@ -72,8 +137,9 @@ data class BoardState(
     fun isSolved() = this == SOLUTION
 
     companion object {
-        private val HALLWAY = (1..11).toList()
-        private val OUTSIDE_VALUES = listOf(3, 5, 7, 9)
+        private val HALLWAY = (1..11).toSet()
+        private val ROOMS = (12..19).toSet()
+        private val OUTSIDE_VALUES = setOf(3, 5, 7, 9)
         private val SOLUTION = fromString(
             "#############\n" +
             "#...........#\n" +
@@ -82,7 +148,7 @@ data class BoardState(
             "  #########  "
         )
 
-        fun fromString(s: String): BoardState {
+        fun fromString(s: String, cost: Int = 0): BoardState {
             val (_, hallway, side1, side2, _) = s.split("\n", limit = 5)
             val positions = mutableMapOf<Int, Amphipod>()
             hallway
@@ -99,7 +165,7 @@ data class BoardState(
             if (Amphipod.fromSymbolOrNull(side2[5]) != null) positions[17] = Amphipod.fromSymbolOrNull(side2[5])!!
             if (Amphipod.fromSymbolOrNull(side2[7]) != null) positions[18] = Amphipod.fromSymbolOrNull(side2[7])!!
             if (Amphipod.fromSymbolOrNull(side2[9]) != null) positions[19] = Amphipod.fromSymbolOrNull(side2[9])!!
-            return BoardState(positions.toMap(), 0)
+            return BoardState(positions.toMap(), cost)
         }
 
     }

@@ -3,12 +3,12 @@ package me.sivieri.aoc2021.day23
 enum class Amphipod(
     val symbol: Char,
     val cost: Int,
-    val roomIndexes: List<Int>
+    val roomIndexes: Set<Int>
 ) {
-    AMBER('A', 1, listOf(12, 16)),
-    BRONZE('B', 10, listOf(13, 17)),
-    COPPER('C', 100, listOf(14, 18)),
-    DESERT('D', 1000, listOf(15, 19));
+    AMBER('A', 1, setOf(12, 16)),
+    BRONZE('B', 10, setOf(13, 17)),
+    COPPER('C', 100, setOf(14, 18)),
+    DESERT('D', 1000, setOf(15, 19));
 
     companion object {
         fun fromSymbolOrNull(c: Char): Amphipod? = when (c) {

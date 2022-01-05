@@ -2,11 +2,13 @@ package me.sivieri.aoc2021.day23
 
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.*
+import org.junit.Ignore
 import org.junit.Test
 
 class BurrowSolverTest {
 
     @Test
+    @Ignore
     fun `part 1 example`() {
         val boardString =
             "#############\n" +
