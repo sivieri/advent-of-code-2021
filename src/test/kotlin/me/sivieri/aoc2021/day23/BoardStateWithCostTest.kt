@@ -107,6 +107,19 @@ class BoardStateWithCostTest {
     }
 
     @Test
+    fun `impossible move 1`() {
+        val boardString =
+            "#############\n" +
+            "#.........D.#\n" +
+            "###A#B#C#D###\n" +
+            "  #A#B#C#.#  \n" +
+            "  #########  "
+        val board = BoardStateWithCost.fromString(boardString)
+        val result = board.generateValidMoves().map { it.toBoardState() }
+        assertThat(result, not(hasItem(BoardStateWithCost.SOLUTION)))
+    }
+
+    @Test
     fun `do not move if not needed`() {
         val boardString =
             "#############\n" +

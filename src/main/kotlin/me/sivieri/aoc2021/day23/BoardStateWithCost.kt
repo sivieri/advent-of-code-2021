@@ -39,7 +39,7 @@ data class BoardStateWithCost(
                 .mapNotNull { position ->
                     val path = DijkstraShortestPath
                         .findPathBetween(g, BoardCell(index, amphipod), BoardCell(position, null))
-                    if (path.vertexList.any { it.amphipod != null && it.amphipod != amphipod }) null // RULE 2
+                    if (path.vertexList.any { it.amphipod != null && (it.amphipod != amphipod || it.index != index) }) null // RULE 2
                     else {
                         val updatedCost = path
                             .length * amphipod.cost + cost
@@ -136,19 +136,19 @@ data class BoardStateWithCost(
     private fun getCell(index: Int): String =
         positions[index]?.symbol?.toString() ?: "."
 
-    fun isSolved() = this == SOLUTION
+    fun isSolved() = this.toBoardState() == SOLUTION
 
     companion object {
         private val HALLWAY = (1..11).toSet()
         private val ROOMS = (12..19).toSet()
         private val OUTSIDE_VALUES = setOf(3, 5, 7, 9)
-        private val SOLUTION = fromString(
+        val SOLUTION = fromString(
             "#############\n" +
             "#...........#\n" +
             "###A#B#C#D###\n" +
             "  #A#B#C#D#  \n" +
             "  #########  "
-        )
+        ).toBoardState()
 
         fun fromString(s: String, cost: Int = 0): BoardStateWithCost {
             val (_, hallway, side1, side2, _) = s.split("\n", limit = 5)
