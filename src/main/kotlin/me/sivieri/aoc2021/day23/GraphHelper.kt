@@ -3,12 +3,10 @@ package me.sivieri.aoc2021.day23
 import org.jgrapht.Graph
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.SimpleDirectedGraph
-import org.jgrapht.graph.SimpleGraph
-import java.text.FieldPosition
 
 object GraphHelper {
 
-    fun generateDirectedGraph(state: BoardState, rootIndex: Int): Graph<BoardCell, DefaultEdge> {
+    fun generateDirectedGraph(state: BoardStateWithCost, rootIndex: Int): Graph<BoardCell, DefaultEdge> {
         val connections = mapOf(
             1 to listOf(2),
             2 to listOf(1, 3),

@@ -18,7 +18,7 @@ class GraphHelperTest {
             "###.#B#C#.###\n" +
             "  #A#B#C#.#  \n" +
             "  #########  "
-        val board = BoardState.fromString(boardString)
+        val board = BoardStateWithCost.fromString(boardString)
         val graph = GraphHelper.generateDirectedGraph(board, 6)
 
         val expected = SimpleDirectedGraph<BoardCell, DefaultEdge>(DefaultEdge::class.java)

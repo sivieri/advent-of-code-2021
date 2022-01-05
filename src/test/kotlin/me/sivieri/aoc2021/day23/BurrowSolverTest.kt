@@ -17,7 +17,7 @@ class BurrowSolverTest {
             "  #A#D#C#A#  \n" +
             "  #########  "
         val solver = BurrowSolver(boardString)
-        val result = solver.solve(1000)
+        val result = solver.solve(10)
         assertThat(result, `is`(12521))
     }
 
