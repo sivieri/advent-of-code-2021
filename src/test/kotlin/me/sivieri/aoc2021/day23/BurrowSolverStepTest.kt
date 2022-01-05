@@ -23,7 +23,7 @@ class BurrowSolverStepTest {
             "  #A#D#C#A#  \n" +
             "  #########  "
         val expected = BoardStateWithCost.fromString(expectedString, 40)
-        assertThat(states, hasItem(expected))
+        assertThat(states, hasEntry(expected.toBoardState(), expected.cost))
     }
 
     @Test
@@ -43,7 +43,7 @@ class BurrowSolverStepTest {
             "  #A#D#C#A#  \n" +
             "  #########  "
         val expected = BoardStateWithCost.fromString(expectedString, 400)
-        assertThat(states, hasItem(expected))
+        assertThat(states, hasEntry(expected.toBoardState(), expected.cost))
     }
 
     @Test
@@ -63,7 +63,7 @@ class BurrowSolverStepTest {
             "  #A#.#C#A#  \n" +
             "  #########  "
         val expected = BoardStateWithCost.fromString(expectedString, 3000)
-        assertThat(states, hasItem(expected))
+        assertThat(states, hasEntry(expected.toBoardState(), expected.cost))
     }
 
     @Test
@@ -83,7 +83,7 @@ class BurrowSolverStepTest {
             "  #A#B#C#A#  \n" +
             "  #########  "
         val expected = BoardStateWithCost.fromString(expectedString, 30)
-        assertThat(states, hasItem(expected))
+        assertThat(states, hasEntry(expected.toBoardState(), expected.cost))
     }
 
     @Test
@@ -103,7 +103,7 @@ class BurrowSolverStepTest {
             "  #A#B#C#A#  \n" +
             "  #########  "
         val expected = BoardStateWithCost.fromString(expectedString, 40)
-        assertThat(states, hasItem(expected))
+        assertThat(states, hasEntry(expected.toBoardState(), expected.cost))
     }
 
     @Test
@@ -123,7 +123,7 @@ class BurrowSolverStepTest {
             "  #A#B#C#A#  \n" +
             "  #########  "
         val expected = BoardStateWithCost.fromString(expectedString, 2000)
-        assertThat(states, hasItem(expected))
+        assertThat(states, hasEntry(expected.toBoardState(), expected.cost))
     }
 
     @Test
@@ -143,7 +143,7 @@ class BurrowSolverStepTest {
             "  #A#B#C#.#  \n" +
             "  #########  "
         val expected = BoardStateWithCost.fromString(expectedString, 3)
-        assertThat(states, hasItem(expected))
+        assertThat(states, hasEntry(expected.toBoardState(), expected.cost))
     }
 
     @Test
@@ -163,7 +163,7 @@ class BurrowSolverStepTest {
             "  #A#B#C#D#  \n" +
             "  #########  "
         val expected = BoardStateWithCost.fromString(expectedString, 3000)
-        assertThat(states, hasItem(expected))
+        assertThat(states, hasEntry(expected.toBoardState(), expected.cost))
     }
 
     @Test
@@ -183,7 +183,7 @@ class BurrowSolverStepTest {
             "  #A#B#C#D#  \n" +
             "  #########  "
         val expected = BoardStateWithCost.fromString(expectedString, 4000)
-        assertThat(states, hasItem(expected))
+        assertThat(states, hasEntry(expected.toBoardState(), expected.cost))
     }
 
     @Test
@@ -203,7 +203,7 @@ class BurrowSolverStepTest {
             "  #A#B#C#D#  \n" +
             "  #########  "
         val expected = BoardStateWithCost.fromString(expectedString, 8)
-        assertThat(states, hasItem(expected))
+        assertThat(states, hasEntry(expected.toBoardState(), expected.cost))
     }
 
 }

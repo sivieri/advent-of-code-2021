@@ -10,7 +10,7 @@ class BurrowSolver(input: String) {
         (1..limit).forEach { iteration ->
             println("Iteration $iteration, states ${states.size}, solved ${states.filter { it.key.isSolved() }.size}")
             val newStates = calculateNewStates()
-            newStates.forEach { boardState -> states[boardState.toBoardState()] = boardState.cost }
+            states.putAll(newStates)
             currentMin = states
                 .filter { it.key.isSolved() }
                 .entries
@@ -20,15 +20,17 @@ class BurrowSolver(input: String) {
         return currentMin
     }
 
-    fun calculateNewStates() = states.flatMap { (boardState, cost) ->
-        val state = BoardStateWithCost(boardState.positions, cost)
-        val (solved, notSolved) = state.generateValidMoves()
-            .partition { it.isSolved() }
-        if (solved.isNotEmpty()) {
-            println(boardState.stringRepresentation())
+    fun calculateNewStates(): Map<BoardState, Int> = states
+        .map { (boardState, cost) ->
+            val state = BoardStateWithCost(boardState.positions, cost)
+            val (solved, notSolved) = state.generateValidMoves()
+                .partition { it.isSolved() }
+            (solved.filter { it.cost < currentMin } + notSolved)
+                .filter { it.cost < states.getOrDefault(it.toBoardState(), Int.MAX_VALUE) }
+                .map { it.toBoardState() to it.cost }
         }
-        (solved.filter { it.cost < currentMin } + notSolved)
-            .filter { it.cost < states.getOrDefault(it.toBoardState(), Int.MAX_VALUE) }
-    }
-
+        .flatten()
+        .groupBy(keySelector = { it.first }, valueTransform = { it.second })
+        .map { it.key to it.value.minOrNull()!! }
+        .toMap()
 }
