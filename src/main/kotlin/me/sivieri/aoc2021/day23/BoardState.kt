@@ -19,8 +19,6 @@ data class BoardState(
 ) {
 
     fun generateValidMoves(): List<BoardState> {
-        val g = GraphHelper.generateGraph(this)
-
         TODO()
     }
 
