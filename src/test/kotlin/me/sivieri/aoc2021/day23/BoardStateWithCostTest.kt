@@ -15,7 +15,7 @@ class BoardStateWithCostTest {
             "  #A#B#C#D#  \n" +
             "  #########  "
         val boardStateWithCost = BoardStateWithCost(
-            mapOf(
+            BoardState(mapOf(
                 12 to Amphipod.AMBER,
                 13 to Amphipod.BRONZE,
                 14 to Amphipod.COPPER,
@@ -24,7 +24,7 @@ class BoardStateWithCostTest {
                 17 to Amphipod.BRONZE,
                 18 to Amphipod.COPPER,
                 19 to Amphipod.DESERT,
-            ),
+            )),
             0
         )
         assertThat(boardStateWithCost.stringRepresentation(), `is`(expected))
@@ -39,7 +39,7 @@ class BoardStateWithCostTest {
             "  #A#B#C#D#  \n" +
             "  #########  "
         val expected = BoardStateWithCost(
-            mapOf(
+            BoardState(mapOf(
                 12 to Amphipod.AMBER,
                 13 to Amphipod.BRONZE,
                 14 to Amphipod.COPPER,
@@ -48,7 +48,7 @@ class BoardStateWithCostTest {
                 17 to Amphipod.BRONZE,
                 18 to Amphipod.COPPER,
                 19 to Amphipod.DESERT,
-            ),
+            )),
             0
         )
         assertThat(BoardStateWithCost.fromString(boardString), `is`(expected))
@@ -115,8 +115,8 @@ class BoardStateWithCostTest {
             "  #A#B#C#.#  \n" +
             "  #########  "
         val board = BoardStateWithCost.fromString(boardString)
-        val result = board.generateValidMoves().map { it.toBoardState() }
-        assertThat(result, not(hasItem(BoardStateWithCost.SOLUTION)))
+        val result = board.generateValidMoves().map { it.boardState }
+        assertThat(result, not(hasItem(BoardState.SOLUTION)))
     }
 
     @Test

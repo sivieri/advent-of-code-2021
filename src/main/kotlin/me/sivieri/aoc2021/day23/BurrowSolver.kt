@@ -2,7 +2,7 @@ package me.sivieri.aoc2021.day23
 
 class BurrowSolver(input: String) {
 
-    private val initialState = BoardStateWithCost.fromString(input).toBoardState()
+    private val initialState = BoardState.fromString(input)
     private val states = mutableMapOf(initialState to 0)
     private var currentMin = Int.MAX_VALUE
 
@@ -30,12 +30,12 @@ class BurrowSolver(input: String) {
 
     fun calculateNewStates(): Map<BoardState, Int> = states
         .map { (boardState, cost) ->
-            val state = BoardStateWithCost(boardState.positions, cost)
+            val state = BoardStateWithCost(boardState, cost)
             val (solved, notSolved) = state.generateValidMoves()
                 .partition { it.isSolved() }
             (solved.filter { it.cost < currentMin } + notSolved)
-                .filter { it.cost < states.getOrDefault(it.toBoardState(), Int.MAX_VALUE) }
-                .map { it.toBoardState() to it.cost }
+                .filter { it.cost < states.getOrDefault(it.boardState, Int.MAX_VALUE) }
+                .map { it.boardState to it.cost }
         }
         .flatten()
         .groupBy(keySelector = { it.first }, valueTransform = { it.second })

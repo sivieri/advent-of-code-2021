@@ -6,7 +6,7 @@ import org.jgrapht.graph.SimpleDirectedGraph
 
 object GraphHelper {
 
-    fun generateDirectedGraph(state: BoardStateWithCost, rootIndex: Int): Graph<BoardCell, DefaultEdge> {
+    fun generateDirectedGraph(state: BoardState, rootIndex: Int): Graph<BoardCell, DefaultEdge> {
         val connections = mapOf(
             1 to listOf(2),
             2 to listOf(1, 3),

@@ -70,7 +70,7 @@ class BurrowSolverTest {
         )
         val result = solver.solve(2) { iteration, states ->
             val b = expected[iteration]!!
-            val board = BoardStateWithCost.fromString(b).toBoardState()
+            val board = BoardState.fromString(b)
             println("Expected board $board exists: ${states.containsKey(board)}, cost: ${states.getOrDefault(board, -1)}")
         }
         assertThat(result, `is`(12521))
