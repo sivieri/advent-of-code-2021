@@ -1,5 +1,8 @@
 package me.sivieri.aoc2021
 
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import org.jgrapht.Graph
 import java.lang.IllegalArgumentException
 import java.util.Collections.swap
@@ -73,3 +76,7 @@ internal fun <K, V> Map<K, V>.combineWith(otherMap: Map<K, V>, f: (v1: V?, v2: V
     (this.keys + otherMap.keys).associateWith { key ->
         f(this[key], otherMap[key])
     }
+
+internal suspend fun <K, V, R> Map<K, V>.pmap(f: suspend (Map.Entry<K, V>) -> R): List<R> = coroutineScope {
+    map { async { f(it) } }.awaitAll()
+}

@@ -1,15 +1,23 @@
-package me.sivieri.aoc2021.day23
+package me.sivieri.aoc2021.day23.extended
 
 import kotlinx.coroutines.runBlocking
 import me.sivieri.aoc2021.pmap
 
-class BurrowSolver(input: String) {
+class BurrowSolverExtended(input: String) {
 
-    private val initialState = BoardState.fromString(input)
-    private val states = mutableMapOf(initialState to 0)
+    private val initialState: BoardStateExtended
+    private val states: MutableMap<BoardStateExtended, Int>
     private var currentMin = Int.MAX_VALUE
 
-    fun solve(historySize: Int, inspection: (Int, Map<BoardState, Int>) -> Unit = { _, _ -> }): Int {
+    init {
+        val splitted = input.split("\n")
+        initialState = BoardStateExtended.fromString(
+            (splitted.subList(0, 3) + MISSING_LINES + splitted.subList(3, 5)).joinToString("\n")
+        )
+        states = mutableMapOf(initialState to 0)
+    }
+
+    fun solve(historySize: Int, inspection: (Int, Map<BoardStateExtended, Int>) -> Unit = { _, _ -> }): Int {
         println("Initial state:\n${initialState.stringRepresentation()}")
         var history = List(historySize) { Int.MAX_VALUE }
         var iteration = 1
@@ -32,10 +40,10 @@ class BurrowSolver(input: String) {
 
     private fun isStable(history: List<Int>): Boolean = history.all { it != Int.MAX_VALUE } && history.distinct().size == 1
 
-    fun calculateNewStates(): Map<BoardState, Int> = runBlocking {
+    fun calculateNewStates(): Map<BoardStateExtended, Int> = runBlocking {
         states
             .pmap { (boardState, cost) ->
-                val state = BoardStateWithCost(boardState, cost)
+                val state = BoardStateWithCostExtended(boardState, cost)
                 val (solved, notSolved) = state.generateValidMoves()
                     .partition { it.isSolved() }
                 (solved.filter { it.cost < currentMin } + notSolved)
@@ -46,5 +54,12 @@ class BurrowSolver(input: String) {
             .groupBy(keySelector = { it.first }, valueTransform = { it.second })
             .map { it.key to it.value.minOrNull()!! }
             .toMap()
+    }
+
+    companion object {
+        private val MISSING_LINES = listOf(
+            "  #D#C#B#A#",
+            "  #D#B#A#C#"
+        )
     }
 }
