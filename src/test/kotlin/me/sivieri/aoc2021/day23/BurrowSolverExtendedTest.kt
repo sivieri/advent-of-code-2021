@@ -9,6 +9,7 @@ import org.junit.Test
 class BurrowSolverExtendedTest {
 
     @Test
+    @Ignore
     fun `part 1 example`() {
         val boardString =
             "#############\n" +
