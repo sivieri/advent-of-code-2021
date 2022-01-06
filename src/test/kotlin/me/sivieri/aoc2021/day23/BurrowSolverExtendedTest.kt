@@ -10,7 +10,7 @@ class BurrowSolverExtendedTest {
 
     @Test
     @Ignore
-    fun `part 1 example`() {
+    fun `part 2 example`() {
         val boardString =
             "#############\n" +
             "#...........#\n" +
