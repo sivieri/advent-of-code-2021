@@ -42,6 +42,38 @@ class MonadTree(input: List<String>) {
         return states.filter { it.key.z == 0 }.maxOf { it.value }
     }
 
+    fun searchMin(): Long {
+        instructions.forEachIndexed { index, instruction ->
+            println("Instruction ${index + 1}, states ${states.size}")
+            val parts = instruction.split(" ")
+            if (parts[0] == "inp") {
+                val a = parts[1].toCharArray()[0]
+                val newStates = states
+                    .flatMap { state ->
+                        (1..9).map { i ->
+                            val newKey = assign(a, i, state.key)
+                            val newValue = (state.value.toString() + i.toString()).toLong()
+                            newKey to newValue
+                        }
+                    }
+                    .filter { (key, value) ->
+                        !states.containsKey(key) || states[key]!! > value
+                    }
+                    .groupBy(keySelector = { it.first }, valueTransform = { it.second })
+                    .map { it.key to it.value.minOrNull()!! }
+                states.putAll(newStates)
+            }
+            else {
+                val newStates = states.map { (state, value) ->
+                    applyInstruction(state, parts[0], parts[1].toCharArray()[0], parts[2]) to value
+                }
+                states.clear()
+                states.putAll(newStates)
+            }
+        }
+        return states.filter { it.key.z == 0 && it.value.toString().length == 14 }.minOf { it.value }
+    }
+
     private fun applyInstruction(state: MonadState, op: String, a: Char, b: String): MonadState {
         val other = if (b.toCharArray()[0] in listOf('w', 'x', 'y', 'z')) getNumber(b.toCharArray()[0], state)
         else b.toInt()
