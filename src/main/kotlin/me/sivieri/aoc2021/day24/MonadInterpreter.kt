@@ -2,9 +2,10 @@ package me.sivieri.aoc2021.day24
 
 import java.lang.IllegalArgumentException
 
-class MonadInterpreter(private val instructions: List<String>) {
+class MonadInterpreter(input: List<String>) {
 
     private val state: MutableMap<String, Int> = mutableMapOf()
+    private val instructions: List<String> = input.filterNot { it.isBlank() }
 
     fun run(input: Long): Map<String, Int> {
         val data = input.toString().toList().map { it.toString().toInt() }
@@ -14,7 +15,6 @@ class MonadInterpreter(private val instructions: List<String>) {
         state["y"] = 0
         state["z"] = 0
         instructions
-            .filterNot { it.isBlank() }
             .forEach { instruction ->
                 val parts = instruction.split(" ")
                 when (parts[0]) {
