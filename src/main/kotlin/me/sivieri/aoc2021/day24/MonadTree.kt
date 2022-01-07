@@ -1,12 +1,9 @@
 package me.sivieri.aoc2021.day24
 
-import kotlinx.coroutines.runBlocking
-import me.sivieri.aoc2021.pmap
-
 class MonadTree(input: List<String>) {
 
     private val instructions: List<String> = input.filterNot { it.isBlank() }
-    private val states = mutableMapOf<MonadState, Long>(
+    private var states = mapOf<MonadState, Long>(
         MonadState(0, 0, 0, 0) to 0
     )
 
@@ -14,9 +11,9 @@ class MonadTree(input: List<String>) {
         instructions.forEachIndexed { index, instruction ->
             println("Instruction ${index + 1}, states ${states.size}")
             val parts = instruction.split(" ")
-            if (parts[0] == "inp") {
+            states = if (parts[0] == "inp") {
                 val a = parts[1].toCharArray()[0]
-                val newStates = states
+                states
                     .flatMap { state ->
                         (1..9).map { i ->
                             val newKey = assign(a, i, state.key)
@@ -24,19 +21,18 @@ class MonadTree(input: List<String>) {
                             newKey to newValue
                         }
                     }
-                    .filter { (key, value) ->
-                        !states.containsKey(key) || states[key]!! < value
+                    .groupBy(keySelector = { it.first }, valueTransform = { it.second })
+                    .map { it.key to it.value.maxOrNull()!! }
+                    .toMap()
+            }
+            else {
+                states
+                    .map { (state, value) ->
+                        applyInstruction(state, parts[0], parts[1].toCharArray()[0], parts[2]) to value
                     }
                     .groupBy(keySelector = { it.first }, valueTransform = { it.second })
                     .map { it.key to it.value.maxOrNull()!! }
-                states.putAll(newStates)
-            }
-            else {
-                val newStates = states.map { (state, value) ->
-                    applyInstruction(state, parts[0], parts[1].toCharArray()[0], parts[2]) to value
-                }
-                states.clear()
-                states.putAll(newStates)
+                    .toMap()
             }
         }
         return states.filter { it.key.z == 0 }.maxOf { it.value }
@@ -46,9 +42,9 @@ class MonadTree(input: List<String>) {
         instructions.forEachIndexed { index, instruction ->
             println("Instruction ${index + 1}, states ${states.size}")
             val parts = instruction.split(" ")
-            if (parts[0] == "inp") {
+            states = if (parts[0] == "inp") {
                 val a = parts[1].toCharArray()[0]
-                val newStates = states
+                states
                     .flatMap { state ->
                         (1..9).map { i ->
                             val newKey = assign(a, i, state.key)
@@ -56,22 +52,21 @@ class MonadTree(input: List<String>) {
                             newKey to newValue
                         }
                     }
-                    .filter { (key, value) ->
-                        !states.containsKey(key) || states[key]!! > value
+                    .groupBy(keySelector = { it.first }, valueTransform = { it.second })
+                    .map { it.key to it.value.minOrNull()!! }
+                    .toMap()
+            }
+            else {
+                states
+                    .map { (state, value) ->
+                        applyInstruction(state, parts[0], parts[1].toCharArray()[0], parts[2]) to value
                     }
                     .groupBy(keySelector = { it.first }, valueTransform = { it.second })
                     .map { it.key to it.value.minOrNull()!! }
-                states.putAll(newStates)
-            }
-            else {
-                val newStates = states.map { (state, value) ->
-                    applyInstruction(state, parts[0], parts[1].toCharArray()[0], parts[2]) to value
-                }
-                states.clear()
-                states.putAll(newStates)
+                    .toMap()
             }
         }
-        return states.filter { it.key.z == 0 && it.value.toString().length == 14 }.minOf { it.value }
+        return states.filter { it.key.z == 0 }.minOf { it.value }
     }
 
     private fun applyInstruction(state: MonadState, op: String, a: Char, b: String): MonadState {
