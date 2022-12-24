@@ -6,7 +6,7 @@ podTemplate(containers: [
 
   node(POD_LABEL) {
     stage('build') {
-      git 'http://192.168.8.11:30280/sivieri/advent-of-code-2020.git'
+      git 'http://192.168.8.11:30280/sivieri/advent-of-code-2021.git'
       container('maven') {
           sh 'java -version'
           sh 'mvn -B clean package'
