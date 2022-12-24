@@ -11,6 +11,8 @@ object Utils {
     fun readInputToList(day: Int): List<String> =
         Files
             .lines(Path.of(this::class.java.getResource("/day$day/input.txt").toURI()))
+            .iterator()
+            .asSequence()
             .toList()
 
     fun <T> readInputBlocks(
